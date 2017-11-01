@@ -30,14 +30,12 @@ public class AABB
 
     public bool TestOverlap(AABB a, AABB b)
     {
-        // a on the left side of b
-        if (a.max.x > b.min.x && a.min.x < b.min.x)
-            if (a.max.y > b.min.y && a.min.y < b.min.y)
+        if (a.max.x >= b.min.x && a.min.x <= b.min.x)
+            if (a.max.y >= b.min.y && a.min.y <= b.min.y)
                 return true;
-
-        // a on the right side of b
-        if (a.max.x < b.min.x && a.min.x > b.min.x)
-            if (a.max.y < b.min.y && a.min.y > b.min.y)
+        
+        if (a.max.x <= b.min.x && a.min.x >= b.min.x)
+            if (a.max.y <= b.min.y && a.min.y >= b.min.y)
                 return true;
         
         return false;

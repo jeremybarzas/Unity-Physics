@@ -2,45 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AABB
+[System.Serializable]
+public class AABB_A
 {
-    public float xSize;
-    public float ySize;
-
-    public Vector2 position;
+    public Vector2 pos;
     public Vector2 min;
     public Vector2 max;
 
-    public AABB(float x, float y)
+    public float left;
+    public float right;
+    public float top;
+    public float bottom;
+
+    public bool TestOverlap(AABB_A a, AABB_A b)
     {
-        xSize = x;
-        ySize = y;
+        // Matthew's Overlap
+        float d1x = b.min.x - a.max.x;
+        float d1y = b.min.y - a.max.y;
+
+        float d2x = a.min.x - b.max.x;
+        float d2y = a.min.y - b.max.y;
+
+        if(d1x > 0 || d1y > 0)
+            return false;
+
+        if (d2x > 0 || d2y > 0)
+            return false;
+
+        return true;
+    }
+    
+    public AABB_A(Vector2 minimum, Vector2 maximum)
+    {
+        min = minimum;
+        max = maximum;
+        pos = new Vector2( min.x, min.y);
+
+        right = max.x;
+        left = min.x;
+        top = max.y;
+        bottom = min.y;
     }
 
-    public void UpdatePosition(Vector3 pos)
+    public AABB_A(Vector2 position, float xSize, float ySize)
     {
-        position = new Vector2(pos.x, pos.y);
+        pos = position;
 
-        min.x = position.x - xSize;
-        max.x = position.x + xSize;
+        min.x = pos.x - xSize;
+        max.x = pos.x + xSize;
 
-        min.y = position.y - ySize;
-        max.y = position.y + ySize;
-    }
+        min.y = pos.y - ySize;
+        max.y = pos.y + ySize;
 
-    public bool TestOverlap(AABB a, AABB b)
-    {
-        // a on left of b
-        if (a.max.x >= b.min.x && a.min.x <= b.min.x)
-            if (a.max.y >= b.min.y && a.min.y <= b.min.y)
-                return true;
-        
-        // a on right of b
-        if (a.max.x <= b.min.x && a.min.x >= b.min.x)
-            if (a.max.y <= b.min.y && a.min.y >= b.min.y)
-                return true;
-        
-
-        return false;
+        right = max.x;
+        left = min.x;
+        top = max.y;
+        bottom = min.y;
     }
 }

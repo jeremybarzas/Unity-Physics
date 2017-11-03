@@ -26,8 +26,9 @@ public class SortAndSweep : MonoBehaviour
 
         // sort axisList by MinX = XAxis / MinY = YAxis
         SortAxisList();      
-  // list of objects that will collide
-            List<AABB_A> activeList = new List<AABB_A>();
+        
+        // list of objects that will collide
+        List<AABB_A> activeList = new List<AABB_A>();
 
         int current = 0;
         int next = current + 1;
@@ -47,15 +48,13 @@ public class SortAndSweep : MonoBehaviour
                     activeList.Remove(activeItem);
                 }
                 else
-                {                    
+                {
                     reportedPairs.Add(new Pair() { a = newItem, b = activeItem });
                     activeList.Add(newItem);
                 }
             }
-
             current++;
-        }
-        
+        }        
     }
 
     public void FillAxisList()
@@ -95,7 +94,5 @@ public class SortAndSweep : MonoBehaviour
                 mytarget.BroadPhase();
             }
         }
-    }
-
-    
+    }    
 }

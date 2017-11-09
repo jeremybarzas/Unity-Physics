@@ -39,7 +39,7 @@ namespace Facehead
             set { force = Force; }
         }
 
-        // public methods
+        // methods
         public void Initialize(float spd, float mas, Vector3 velo, Vector3 pos)
         {
             Speed = spd;
@@ -48,26 +48,8 @@ namespace Facehead
             Position = pos;
         }
 
-        public bool Apply_Forces(float mag, List<Vector3> forces)
-        {
-            Vector3 forceSum = new Vector3(0, 0, 0);
-
-            foreach (Vector3 newForce in forces)
-            {
-                forceSum += newForce;
-            }
-
-            // apply force
-            return Add_Force(mag, forceSum);                
-        }
-
-        public Vector3 Update_Boid()
-        {
-            return Update_Agent(Time.deltaTime);
-        }
-
         // inherited methods
-        protected override bool Add_Force(float mag, Vector3 newForce)
+        public override bool Add_Force(float mag, Vector3 newForce)
         {
             // check for any change in velocity
             if (mag <= 0 || newForce.Equals(new Vector3(0,0,0)))
@@ -78,7 +60,7 @@ namespace Facehead
             return true;
         }
 
-        protected override Vector3 Update_Agent(float deltaTime)
+        public override Vector3 Update_Agent(float deltaTime)
         {
             Acceleration = Force * 1 / Mass;
             Velocity += Acceleration * deltaTime;

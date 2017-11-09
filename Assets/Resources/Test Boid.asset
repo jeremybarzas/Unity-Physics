@@ -11,8 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70874670e0cafad48b40eb9c33485ac8, type: 3}
   m_Name: Test Boid
   m_EditorClassIdentifier: 
-  speed: 0
-  mass: 0
+  speed: 1
+  mass: 1
   velocity: {x: 0, y: 0, z: 0}
-  acceleration: {x: 0, y: 0, z: 0}
   position: {x: 0, y: 0, z: 0}
+  acceleration: {x: 0, y: 0, z: 0}
+  force: {x: 0, y: 0, z: 0}

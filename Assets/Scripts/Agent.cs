@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Facehead
 { 
-
     public abstract class Agent : ScriptableObject
     {
         // variables
@@ -22,7 +21,7 @@ namespace Facehead
         protected Vector3 force;
 
         // methods       
-        protected abstract bool Add_Force(float magnitude, Vector3 newForce);
-        protected abstract Vector3 Update_Agent(float deltaTime);
+        public abstract bool Add_Force(float magnitude, Vector3 newForce);
+        public abstract Vector3 Update_Agent(float deltaTime);
     }
 }

@@ -6,44 +6,18 @@ namespace Facehead
 {
     public class BoidBehaviour : AgentBehaviour
     {
-        //fields
-        public float speed;
-        public float mass;
-        public Vector3 position;
-        public Vector3 velocity;        
-
-        // properties
-        public Boid Boid 
+        // methods
+        public void SetBoid(Agent b)
         {
-            get { return (Boid)agent; }
-            set { agent = Boid; }
+            agent = (Boid)b;
+            ((Boid)agent).Initialize(5, 1, Vector3.up, Vector3.zero);
         }
 
         // Unity methods
-        public void Start()
-        {
-            Boid.Initialize(speed, mass, velocity, position);
-        }
-
         public void LateUpdate()
-        {
-            //List<Vector3> forces = new List<Vector3>();
-            //forces.Add(new Vector3(1, 1, 1));
-            //forces.Add(new Vector3(1, 1, 1));
-            //forces.Add(new Vector3(1, 1, 1));
-            //forces.Add(new Vector3(1, 1, 1));
-            //forces.Add(new Vector3(1, 1, 1));
-            //forces.Add(new Vector3(1, 1, 1));
-
-            //Boid.Apply_Forces(2, forces);
-
-            transform.position = Boid.Update_Boid();
-        }
-
-        public void SetBoid(Boid b)
-        { 
-            
-        }
+        {            
+            transform.position = agent.Update_Agent(Time.deltaTime);
+        }        
     }
 }
  

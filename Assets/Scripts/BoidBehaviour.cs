@@ -12,14 +12,14 @@ namespace Facehead
             set { agent = Boid; }
         }
 
+        public void Start()
+        {
+            Boid.Init(2, 1, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+        }
+
         public void LateUpdate()
         {
             transform.position = Boid.Update_Boid(Time.deltaTime);
-        }
-
-        public void Init(float s, float m, Vector3 v, Vector3 p)
-        {
-            Boid.Init(s, m, v, p);
         }
 
         public bool Apply_Forces(float mag, List<Vector3> forces)

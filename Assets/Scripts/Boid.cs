@@ -18,6 +18,11 @@ namespace Facehead
             get { return mass; }
             set { mass = Mass; }
         }
+        public Vector3 Position
+        {
+            get { return position; }
+            set { position = Position; }
+        }
         public Vector3 Velocity
         {
             get { return velocity; }
@@ -27,12 +32,7 @@ namespace Facehead
         {
             get { return acceleration; }
             set { acceleration = Acceleration; }
-        }
-        public Vector3 Position
-        {
-            get { return position; }
-            set { position = Position; }
-        }
+        }       
         public Vector3 Force
         {
             get { return force; }
@@ -40,30 +40,33 @@ namespace Facehead
         }
 
         // public methods
-        public void Init(float s, float m, Vector3 v, Vector3 p)
+        public void Initialize(float spd, float mas, Vector3 velo, Vector3 pos)
         {
-            Initialize(s, m, v, p);
+            Speed = spd;
+            Mass = mas;
+            Velocity = velo;
+            Position = pos;
         }
 
-        public bool Add_Force_Boid(float mag, Vector3 newForce)
+        public bool Apply_Forces(float mag, List<Vector3> forces)
         {
-            return Add_Force(mag, newForce);
+            Vector3 forceSum = new Vector3(0, 0, 0);
+
+            foreach (Vector3 newForce in forces)
+            {
+                forceSum += newForce;
+            }
+
+            // apply force
+            return Add_Force(mag, forceSum);                
         }
 
-        public Vector3 Update_Boid(float deltaTime)
+        public Vector3 Update_Boid()
         {
-            return Update_Agent(deltaTime);
+            return Update_Agent(Time.deltaTime);
         }
 
         // inherited methods
-        protected override void Initialize(float s, float m, Vector3 v, Vector3 p)
-        {
-            Speed = s;
-            Mass = m;
-            Velocity = v;
-            Position = p;
-        }
-
         protected override bool Add_Force(float mag, Vector3 newForce)
         {
             // check for any change in velocity
@@ -82,6 +85,6 @@ namespace Facehead
             Velocity = Vector3.ClampMagnitude(Velocity, Speed);
             Position += Velocity * deltaTime;
             return Position;
-        }
+        }     
     }
 }

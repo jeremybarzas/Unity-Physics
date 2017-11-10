@@ -24,13 +24,24 @@ namespace Facehead
             {
                 var go = Instantiate(boidPrefab);
                 var skeleton = go.AddComponent<BoidBehaviour>();
-
-                var agent = ScriptableObject.CreateInstance<Boid>();                
-                //skeleton.Set_Boid(agent);
-                skeleton.Randomize_Boid(agent);
-                agents.Add(agent);
+                var boid = ScriptableObject.CreateInstance<Boid>();
+                boid.Initialize();
+                agents.Add(boid);
+                skeleton.Set_Moveable(boid);                
             }
-        }        
+        }
+
+        public static List<Boid> Get_Boids()
+        {
+            var boids = new List<Boid>();
+
+            foreach (Boid b in agents)
+            {
+                boids.Add(b);
+            }
+
+            return boids;
+        }
 
         // Unity methods
         private void Awake()

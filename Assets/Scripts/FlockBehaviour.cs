@@ -8,25 +8,28 @@ namespace Facehead
     {
         // fields
         public List<Boid> boidList = new List<Boid>();
+        public float max_force = 2;
         public float cohesionScale = 1;
         public float dispersionScale = 1;        
         public float alignmentScale = 1;
         public float padding_distance = 2;
-        public float max_force = 2;
+        public float neighbor_distance = 10;
 
         // methods
         public Vector3 Cohesion(Boid boid)
         {
-            var force = Vector3.zero;            
-            var positionSum = Vector3.zero;
+            var force = Vector3.zero;
             var percievedCenter = Vector3.zero;
 
-            foreach (var b in boidList)
+            foreach (var b in boid.neighbors)
             {
-                positionSum += b.Position;
+                if (b != boid)
+                {
+                    percievedCenter += b.Position;
+                }                
             }           
 
-            percievedCenter = positionSum / (boidList.Count - 1);
+            percievedCenter = percievedCenter / (boidList.Count - 1);
 
             force = percievedCenter - boid.Position;
             force = Vector3.ClampMagnitude(force, max_force);
@@ -37,32 +40,37 @@ namespace Facehead
         {
             Vector3 force = Vector3.zero;
 
-            foreach (var b in boidList)
+            foreach (var b in boid.neighbors)
             {
-                if ((boid.Position - b.Position).magnitude < padding_distance)
+                if (b != boid)
                 {
-                    force = force - (boid.Position - b.Position);
+                    if ((b.Position - boid.Position).magnitude < padding_distance)
+                    {
+                        force = force - (b.Position - boid.Position);
+                    }
                 }
             }
 
-            force = Vector3.ClampMagnitude(force, -max_force);
+            force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
 
         public Vector3 Alignment(Boid boid)
         {
             Vector3 force = Vector3.zero;
-            var velocitySum = Vector3.zero;
             var percievedVelocity = Vector3.zero;
 
-            foreach (var b in boidList)
+            foreach (var b in boid.neighbors)
             {
-                velocitySum += b.Velocity;
+                if (b != boid)
+                {
+                    percievedVelocity += b.Velocity;
+                }
             }
 
-            percievedVelocity = velocitySum / (boidList.Count - 1);
+            percievedVelocity = percievedVelocity / (boidList.Count - 1);
 
-            percievedVelocity = percievedVelocity - boid.Velocity;
+            force = (boid.Velocity - percievedVelocity);
             force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
@@ -70,15 +78,29 @@ namespace Facehead
         // Unity methods
         private void Start()
         {
-            foreach (var agent in AgentFactory.Agents)
-            {                
-                boidList.Add((Boid)agent);
-            }
+            boidList = AgentFactory.Get_Boids();
         }
 
         private void Update()
         {
-            var avgPos = Vector3.zero;
+            foreach (var boid in boidList)
+            {
+                foreach (var b in boidList)
+                {
+                    if (b != boid)
+                    {
+                        if ((b.Position - boid.Position).magnitude < neighbor_distance)
+                        {
+                            boid.neighbors.Add(b);
+                        }
+                        else
+                        {
+                            boid.neighbors.Remove(b);
+                        }
+                    }
+                }
+            }
+
             foreach (var b in boidList)
             {
                 var v1 = Cohesion(b);
@@ -87,14 +109,8 @@ namespace Facehead
                 
                 b.Add_Force(cohesionScale, v1);
                 b.Add_Force(dispersionScale, v2);
-                b.Add_Force(alignmentScale, v3);
-
-                avgPos += b.Position;
-            }
-
-            avgPos /= boidList.Count;
-
-            transform.position = avgPos;
+                b.Add_Force(alignmentScale, v3);                
+            }            
         }
     }
 }

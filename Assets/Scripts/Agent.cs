@@ -8,11 +8,11 @@ namespace Facehead
     {
         // variables
         [SerializeField]
-        protected float speed;
+        protected float max_speed;
         [SerializeField]
         protected float mass;
         [SerializeField]
-        public Vector3 velocity;
+        protected Vector3 velocity;
         [SerializeField]
         protected Vector3 position;
         [SerializeField]
@@ -20,8 +20,33 @@ namespace Facehead
         [SerializeField]
         protected Vector3 force;
 
-        // methods       
-        public abstract bool Add_Force(float magnitude, Vector3 newForce);
-        public abstract Vector3 Update_Agent(float deltaTime);
+        // properties
+        public float Max_Speed
+        {
+            get { return max_speed; }
+        }
+        public float Mass
+        {
+            get { return mass; }
+        }
+        public Vector3 Position
+        {
+            get { return position; }
+        }
+        public Vector3 Velocity
+        {
+            get { return velocity; }
+        }
+        public Vector3 Acceleration
+        {
+            get { return acceleration; }
+        }
+        public Vector3 Force
+        {
+            get { return force; }
+        }
+
+        // methods
+        public abstract void Initialize();
     }
 }

@@ -12,7 +12,7 @@ namespace Facehead
         [SerializeField]
         protected float mass;
         [SerializeField]
-        protected Vector3 velocity;
+        public Vector3 velocity;
         [SerializeField]
         protected Vector3 position;
         [SerializeField]

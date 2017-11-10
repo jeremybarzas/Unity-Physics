@@ -26,8 +26,8 @@ namespace Facehead
                 var skeleton = go.AddComponent<BoidBehaviour>();
 
                 var agent = ScriptableObject.CreateInstance<Boid>();                
-                skeleton.SetBoid(agent);
-
+                //skeleton.Set_Boid(agent);
+                skeleton.Randomize_Boid(agent);
                 agents.Add(agent);
             }
         }        

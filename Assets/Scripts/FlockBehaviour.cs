@@ -8,11 +8,11 @@ namespace Facehead
     {
         // fields
         public List<Boid> boidList = new List<Boid>();
-        public float dMag;
-        public float cMag;
-        public float aMag;
-        public float max_force;
-        public float padding_distance;
+        public float cohesionScale = 1;
+        public float dispersionScale = 1;        
+        public float alignmentScale = 1;
+        public float padding_distance = 2;
+        public float max_force = 2;
 
         // methods
         public Vector3 Cohesion(Boid boid)
@@ -45,7 +45,7 @@ namespace Facehead
                 }
             }
 
-            force = Vector3.ClampMagnitude(force, max_force);
+            force = Vector3.ClampMagnitude(force, -max_force);
             return force;
         }
 
@@ -78,16 +78,23 @@ namespace Facehead
 
         private void Update()
         {
+            var avgPos = Vector3.zero;
             foreach (var b in boidList)
             {
                 var v1 = Cohesion(b);
                 var v2 = Dispersion(b);
                 var v3 = Alignment(b);
                 
-                b.Add_Force(cMag, v1);
-                b.Add_Force(dMag, v2);
-                b.Add_Force(aMag, v3);
+                b.Add_Force(cohesionScale, v1);
+                b.Add_Force(dispersionScale, v2);
+                b.Add_Force(alignmentScale, v3);
+
+                avgPos += b.Position;
             }
+
+            avgPos /= boidList.Count;
+
+            transform.position = avgPos;
         }
     }
 }

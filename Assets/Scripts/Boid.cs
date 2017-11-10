@@ -45,7 +45,7 @@ namespace Facehead
             Speed = spd;
             Mass = mas;
             Velocity = velo;
-            Position = pos + Random.onUnitSphere * 5;
+            Position = pos;
         }
 
         // inherited methods

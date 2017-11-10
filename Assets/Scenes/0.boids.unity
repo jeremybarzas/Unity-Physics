@@ -139,7 +139,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74295ee84afc26044bc7f0b65f6b5fde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Count: 3
+  boidPrefab: {fileID: 1517002559384860, guid: 36a635b8e01b07541babdde0619c8efb, type: 2}
+  Count: 10
 --- !u!4 &149934721
 Transform:
   m_ObjectHideFlags: 0
@@ -316,7 +317,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1138891462}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -100}
+  m_LocalPosition: {x: 0, y: 0, z: -50}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -350,11 +351,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidList: []
-  dMag: 0
-  cMag: 0
-  aMag: 0
-  max_force: 10
-  padding_distance: 0
+  dMag: 5
+  cMag: 1
+  aMag: 1
+  max_force: 5
+  padding_distance: 10
 --- !u!4 &1285805044
 Transform:
   m_ObjectHideFlags: 0

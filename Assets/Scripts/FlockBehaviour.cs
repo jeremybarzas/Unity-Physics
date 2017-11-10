@@ -8,10 +8,11 @@ namespace Facehead
     {
         // fields
         public List<Boid> boidList = new List<Boid>();
-        public float dMag = 1;
-        public float cMag = 1;
-        public float aMag = 1;
-        public float max_force = 5;
+        public float dMag;
+        public float cMag;
+        public float aMag;
+        public float max_force;
+        public float padding_distance;
 
         // methods
         public Vector3 Cohesion(Boid boid)
@@ -36,14 +37,32 @@ namespace Facehead
         {
             Vector3 force = Vector3.zero;
 
+            foreach (var b in boidList)
+            {
+                if ((boid.Position - b.Position).magnitude < padding_distance)
+                {
+                    force = force - (boid.Position - b.Position);
+                }
+            }
+
             force = Vector3.ClampMagnitude(force, max_force);
             return force;
-        }        
+        }
 
         public Vector3 Alignment(Boid boid)
         {
             Vector3 force = Vector3.zero;
+            var velocitySum = Vector3.zero;
+            var percievedVelocity = Vector3.zero;
 
+            foreach (var b in boidList)
+            {
+                velocitySum += b.Velocity;
+            }
+
+            percievedVelocity = velocitySum / (boidList.Count - 1);
+
+            percievedVelocity = percievedVelocity - boid.Velocity;
             force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
@@ -52,7 +71,7 @@ namespace Facehead
         private void Start()
         {
             foreach (var agent in AgentFactory.Agents)
-            {
+            {                
                 boidList.Add((Boid)agent);
             }
         }

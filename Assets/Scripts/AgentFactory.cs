@@ -7,6 +7,7 @@ namespace Facehead
     public class AgentFactory : MonoBehaviour
     {
         // fields
+        public GameObject boidPrefab;
         public int Count;                
         private static List<Agent> agents = new List<Agent>();
 
@@ -21,7 +22,7 @@ namespace Facehead
         {
             for (int i = 0; i < Count; i++)
             {
-                var go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                var go = Instantiate(boidPrefab);
                 var skeleton = go.AddComponent<BoidBehaviour>();
 
                 var agent = ScriptableObject.CreateInstance<Boid>();                
@@ -29,7 +30,7 @@ namespace Facehead
 
                 agents.Add(agent);
             }
-        }
+        }        
 
         // Unity methods
         private void Awake()

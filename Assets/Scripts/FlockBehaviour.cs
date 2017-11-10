@@ -11,13 +11,14 @@ namespace Facehead
         public float dMag = 1;
         public float cMag = 1;
         public float aMag = 1;
+        public float max_force = 5;
 
         // methods
         public Vector3 Cohesion(Boid boid)
         {
-            Vector3 force = Vector3.zero;            
-            Vector3 positionSum = Vector3.zero;
-            Vector3 percievedCenter = Vector3.zero;
+            var force = Vector3.zero;            
+            var positionSum = Vector3.zero;
+            var percievedCenter = Vector3.zero;
 
             foreach (var b in boidList)
             {
@@ -27,24 +28,24 @@ namespace Facehead
             percievedCenter = positionSum / (boidList.Count - 1);
 
             force = percievedCenter - boid.Position;
-
-            return force / force.magnitude;
+            force = Vector3.ClampMagnitude(force, max_force);
+            return force;
         }
 
         public Vector3 Dispersion(Boid boid)
         {
             Vector3 force = Vector3.zero;
 
-
-            return force / force.magnitude;
+            force = Vector3.ClampMagnitude(force, max_force);
+            return force;
         }        
 
         public Vector3 Alignment(Boid boid)
         {
             Vector3 force = Vector3.zero;
 
-
-            return force / force.magnitude;
+            force = Vector3.ClampMagnitude(force, max_force);
+            return force;
         }
 
         // Unity methods
@@ -58,17 +59,14 @@ namespace Facehead
 
         private void Update()
         {
-            Vector3 v1, v2, v3;
-
             foreach (var b in boidList)
             {
-                v1 = Cohesion(b);
+                var v1 = Cohesion(b);
+                var v2 = Dispersion(b);
+                var v3 = Alignment(b);
+                
                 b.Add_Force(cMag, v1);
-
-                v2 = Dispersion(b);
                 b.Add_Force(dMag, v2);
-
-                v3 = Alignment(b);
                 b.Add_Force(aMag, v3);
             }
         }

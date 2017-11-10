@@ -7,17 +7,16 @@ namespace Facehead
     public class BoidBehaviour : AgentBehaviour
     {
         // methods
-        public void SetBoid(Agent b)
+        public void SetBoid(Boid b)
         {
-            agent = (Boid)b;
-            ((Boid)agent).Initialize(5, 1, Vector3.up, Vector3.zero);
+            b.Initialize(5, 5, Vector3.up, Vector3.up);
+            agent = b;
         }
 
         // Unity methods
         public void LateUpdate()
-        {            
+        {
             transform.position = agent.Update_Agent(Time.deltaTime);
-        }        
+        }
     }
 }
- 

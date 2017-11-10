@@ -11,32 +11,32 @@ namespace Facehead
         public float Speed
         {
             get { return speed; }
-            set { speed = Speed; }
+            set { speed = value; }
         }
         public float Mass
         {
             get { return mass; }
-            set { mass = Mass; }
+            set { mass = value; }
         }
         public Vector3 Position
         {
             get { return position; }
-            set { position = Position; }
+            set { position = value; }
         }
         public Vector3 Velocity
         {
             get { return velocity; }
-            set { velocity = Velocity; }
+            set { velocity = value; }
         }
         public Vector3 Acceleration
         {
             get { return acceleration; }
-            set { acceleration = Acceleration; }
+            set { acceleration = value; }
         }       
         public Vector3 Force
         {
             get { return force; }
-            set { force = Force; }
+            set { force = value; }
         }
 
         // methods
@@ -45,7 +45,7 @@ namespace Facehead
             Speed = spd;
             Mass = mas;
             Velocity = velo;
-            Position = pos;
+            Position = pos + Random.onUnitSphere * 5;
         }
 
         // inherited methods

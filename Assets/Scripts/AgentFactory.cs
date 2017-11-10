@@ -21,10 +21,10 @@ namespace Facehead
         {
             for (int i = 0; i < Count; i++)
             {
-                var go = new GameObject();
+                var go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
                 var skeleton = go.AddComponent<BoidBehaviour>();
 
-                var agent = ScriptableObject.CreateInstance<Agent>();
+                var agent = ScriptableObject.CreateInstance<Boid>();                
                 skeleton.SetBoid(agent);
 
                 agents.Add(agent);

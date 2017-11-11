@@ -91,11 +91,18 @@ namespace Facehead
                     {
                         if ((b.Position - boid.Position).magnitude < neighbor_distance)
                         {
-                            boid.neighbors.Add(b);
+                            if (!boid.neighbors.Contains(b))
+                            {
+                                boid.neighbors.Add(b);
+                            }
+                            
                         }
                         else
                         {
-                            boid.neighbors.Remove(b);
+                            if (boid.neighbors.Contains(b))
+                            {
+                                boid.neighbors.Remove(b);
+                            }
                         }
                     }
                 }

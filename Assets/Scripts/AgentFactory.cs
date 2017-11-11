@@ -24,10 +24,10 @@ namespace Facehead
             {
                 var go = Instantiate(boidPrefab);
                 var skeleton = go.AddComponent<BoidBehaviour>();
-                var boid = ScriptableObject.CreateInstance<Boid>();
+                var boid = ScriptableObject.CreateInstance<Boid>();                
                 boid.Initialize();
+                skeleton.Set_Moveable(boid);
                 agents.Add(boid);
-                skeleton.Set_Moveable(boid);                
             }
         }
 

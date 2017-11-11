@@ -31,7 +31,7 @@ namespace Facehead
 
             percievedCenter = percievedCenter / (boidList.Count - 1);
 
-            force = percievedCenter - boid.Position;
+            force = (percievedCenter - boid.Position);
             force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }

@@ -28,16 +28,17 @@ namespace Facehead
             velocity += acceleration * deltaTime;
             velocity = Vector3.ClampMagnitude(velocity, max_speed);
             position += velocity * deltaTime;
+            force = Vector3.zero;
             return position;
         }
 
         // inherited methods
         public override void Initialize()
         {
-            max_speed = 10;
+            max_speed = 50;
             mass = 1;
-            velocity = Vector3.up;
-            position = new Vector3(0, 30, 0);
+            velocity = Random.onUnitSphere;
+            position = Random.insideUnitSphere;
             acceleration = Vector3.zero;
             force = Vector3.zero;
         }

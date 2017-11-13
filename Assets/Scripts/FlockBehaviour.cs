@@ -8,11 +8,11 @@ namespace Facehead
     {
         // fields
         public List<Boid> boidList = new List<Boid>();
-        public float max_force = 2;
-        public float cohesionScale = 1;
-        public float dispersionScale = 1;        
+        public float max_force = 100;
+        public float cohesionScale = 5;
+        public float dispersionScale = 10;        
         public float alignmentScale = 1;
-        public float padding_distance = 2;
+        public float padding_distance = 5;
         public float neighbor_distance = 10;
 
         // methods

@@ -7,9 +7,15 @@ namespace Facehead
     [CreateAssetMenu(menuName = "Agent/Boid")]
     public class Boid : Agent, IMoveable
     {
-        // fields
-        public List<Boid> neighbors = new List<Boid>();
+        // fields        
+        private List<Boid> neighbors = new List<Boid>();
 
+        // properties
+        public List<Boid> Neighbors
+        {
+            get { return neighbors; }
+        }
+            
         // interface methods        
         public bool Add_Force(float mag, Vector3 newForce)
         {
@@ -41,6 +47,34 @@ namespace Facehead
             position = Random.insideUnitSphere;
             acceleration = Vector3.zero;
             force = Vector3.zero;
+        }
+
+        public void Set_Neighbors(float size)
+        {
+            List<Boid> boidList = AgentFactory.Get_Boids();            
+
+            // check for neighbors within set distance
+            foreach (var b in boidList)
+            {
+                if (b != this)
+                {
+                    if ((b.Position - this.Position).magnitude < size)
+                    {
+                        if (!this.neighbors.Contains(b))
+                        {
+                            this.neighbors.Add(b);
+                        }
+
+                    }
+                    else
+                    {
+                        if (this.neighbors.Contains(b))
+                        {
+                            this.neighbors.Remove(b);
+                        }
+                    }
+                }
+            }
         }
     }
 }

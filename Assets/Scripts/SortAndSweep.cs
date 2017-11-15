@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEditor;
 
 [System.Serializable]
 public struct Pair
@@ -80,19 +79,5 @@ public class SortAndSweep : MonoBehaviour
         BroadPhase();
         reportedPairs.Count();
         return;
-    }
-
-    [CustomEditor(typeof(SortAndSweep))]
-    public class EditorSortAndSweep : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-            var mytarget = target as SortAndSweep;
-            if(GUILayout.Button("BroadPhase Sweep"))
-            {
-                mytarget.BroadPhase();
-            }
-        }
-    }    
+    }   
 }

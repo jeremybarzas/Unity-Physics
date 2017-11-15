@@ -21,7 +21,7 @@ namespace Facehead
             var force = Vector3.zero;
             var percievedCenter = Vector3.zero;
 
-            foreach (var b in boid.neighbors)
+            foreach (var b in boid.Neighbors)
             {
                 if (b != boid)
                 {
@@ -40,7 +40,7 @@ namespace Facehead
         {
             Vector3 force = Vector3.zero;
 
-            foreach (var b in boid.neighbors)
+            foreach (var b in boid.Neighbors)
             {
                 if (b != boid)
                 {
@@ -60,7 +60,7 @@ namespace Facehead
             Vector3 force = Vector3.zero;
             var percievedVelocity = Vector3.zero;
 
-            foreach (var b in boid.neighbors)
+            foreach (var b in boid.Neighbors)
             {
                 if (b != boid)
                 {
@@ -83,33 +83,9 @@ namespace Facehead
 
         private void Update()
         {
-            foreach (var boid in boidList)
-            {
-                foreach (var b in boidList)
-                {
-                    if (b != boid)
-                    {
-                        if ((b.Position - boid.Position).magnitude < neighbor_distance)
-                        {
-                            if (!boid.neighbors.Contains(b))
-                            {
-                                boid.neighbors.Add(b);
-                            }
-                            
-                        }
-                        else
-                        {
-                            if (boid.neighbors.Contains(b))
-                            {
-                                boid.neighbors.Remove(b);
-                            }
-                        }
-                    }
-                }
-            }
-
             foreach (var b in boidList)
             {
+                b.Set_Neighbors(neighbor_distance);
                 var v1 = Cohesion(b);
                 var v2 = Dispersion(b);
                 var v3 = Alignment(b);

@@ -332,7 +332,7 @@ MonoBehaviour:
   dispersionScale: 10
   alignmentScale: 2
   padding_distance: 3
-  neighbor_distance: 25
+  neighbor_distance: 100
 --- !u!4 &1285805044
 Transform:
   m_ObjectHideFlags: 0

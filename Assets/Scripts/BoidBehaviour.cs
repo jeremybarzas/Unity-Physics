@@ -20,7 +20,7 @@ namespace Facehead
         public void LateUpdate()
         {
             transform.position = moveable.Update_Agent(Time.deltaTime);
-            transform.forward = agent.Velocity.normalized / Time.deltaTime;
+            transform.forward = agent.Velocity.normalized;
         }
     }
 }

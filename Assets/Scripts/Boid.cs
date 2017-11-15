@@ -44,7 +44,7 @@ namespace Facehead
             max_speed = 50;
             mass = 1;
             velocity = Random.onUnitSphere;
-            position = Random.insideUnitSphere;
+            position = Vector3.zero;
             acceleration = Vector3.zero;
             force = Vector3.zero;
         }

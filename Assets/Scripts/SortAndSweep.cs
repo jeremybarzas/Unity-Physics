@@ -29,8 +29,7 @@ public class SortAndSweep : MonoBehaviour
         // list of objects that will collide
         List<AABB_A> activeList = new List<AABB_A>();
 
-        int current = 0;
-        int next = current + 1;
+        int current = 0;        
         foreach (AABB_A axisItem in axisList)
         {
             // add first item to active list

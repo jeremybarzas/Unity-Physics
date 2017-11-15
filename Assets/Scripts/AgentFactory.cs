@@ -9,12 +9,12 @@ namespace Facehead
         // fields
         public GameObject boidPrefab;
         public int Count;                
-        private static List<Agent> agents = new List<Agent>();
+        private static List<Agent> agentList = new List<Agent>();
 
         // properties
         public static List<Agent> Agents
         {
-            get { return agents; }
+            get { return agentList; }
         }
 
         // methods      
@@ -27,7 +27,7 @@ namespace Facehead
                 var boid = ScriptableObject.CreateInstance<Boid>();
                 boid.Initialize();
                 skeleton.Set_Moveable(boid);
-                agents.Add(boid);
+                agentList.Add(boid);
             }
         }
 
@@ -35,7 +35,7 @@ namespace Facehead
         {
             var boids = new List<Boid>();
 
-            foreach (Boid b in agents)
+            foreach (Boid b in agentList)
             {
                 boids.Add(b);
             }

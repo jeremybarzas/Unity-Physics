@@ -24,6 +24,7 @@ namespace Facehead
         public float Max_Speed
         {
             get { return max_speed; }
+            set { max_speed = value; }
         }
         public float Mass
         {

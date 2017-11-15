@@ -8,27 +8,41 @@ namespace Facehead
     {
         // fields
         public List<Boid> boidList = new List<Boid>();
+        public float max_speed;
         public float max_force = 100;
-        public float cohesionScale = 5;
-        public float dispersionScale = 10;        
         public float alignmentScale = 1;
-        public float padding_distance = 5;
-        public float neighbor_distance = 10;
-
+        public float cohesionScale = 5;
+        public float dispersionScale = 10;
+        public float dispersion_distance = 5;        
+        public float neighbor_distance = 10;       
+       
         // methods
+        public Vector3 Get_Center()
+        {
+            var center = Vector3.zero;
+
+            foreach (var b in boidList)
+            {
+                center += b.Position;
+            }
+
+            center = center / boidList.Count;
+            return center;
+        }
+
         public Vector3 Cohesion(Boid boid)
         {
             var force = Vector3.zero;
             var percievedCenter = Vector3.zero;
 
-            foreach (var b in boid.Neighbors)
+            foreach (var b in boidList)
             {
                 if (b != boid)
                 {
                     percievedCenter += b.Position;
                 }                
             }           
-
+            
             percievedCenter = percievedCenter / (boidList.Count - 1);
 
             force = (percievedCenter - boid.Position);
@@ -40,11 +54,11 @@ namespace Facehead
         {
             Vector3 force = Vector3.zero;
 
-            foreach (var b in boid.Neighbors)
+            foreach (var b in boidList)
             {
                 if (b != boid)
                 {
-                    if ((b.Position - boid.Position).magnitude < padding_distance)
+                    if ((b.Position - boid.Position).magnitude < dispersion_distance)
                     {
                         force = force - (b.Position - boid.Position);
                     }
@@ -60,7 +74,7 @@ namespace Facehead
             Vector3 force = Vector3.zero;
             var percievedVelocity = Vector3.zero;
 
-            foreach (var b in boid.Neighbors)
+            foreach (var b in boidList)
             {
                 if (b != boid)
                 {
@@ -85,7 +99,9 @@ namespace Facehead
         {
             foreach (var b in boidList)
             {
-                b.Set_Neighbors(neighbor_distance);
+                //b.Set_Neighbors(neighbor_distance);
+                b.Max_Speed = max_speed;
+
                 var v1 = Cohesion(b);
                 var v2 = Dispersion(b);
                 var v3 = Alignment(b);
@@ -93,7 +109,9 @@ namespace Facehead
                 b.Add_Force(cohesionScale, v1);
                 b.Add_Force(dispersionScale, v2);
                 b.Add_Force(alignmentScale, v3);                
-            }            
+            }
+
+            transform.position = Get_Center();
         }
     }
 }

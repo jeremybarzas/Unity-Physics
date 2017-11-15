@@ -8,7 +8,7 @@ namespace Facehead
     {
         // fields
         public GameObject boidPrefab;
-        public int Count;                
+        public int Count;
         private static List<Agent> agentList = new List<Agent>();
 
         // properties
@@ -21,10 +21,12 @@ namespace Facehead
         public void Create()
         {
             for (int i = 0; i < Count; i++)
-            {
+            {                
                 var go = Instantiate(boidPrefab);
-                var skeleton = go.AddComponent<BoidBehaviour>();
+                go.hideFlags = HideFlags.HideInHierarchy;
+                var skeleton = go.AddComponent<BoidBehaviour>();                
                 var boid = ScriptableObject.CreateInstance<Boid>();
+                
                 boid.Initialize();
                 skeleton.Set_Moveable(boid);
                 agentList.Add(boid);

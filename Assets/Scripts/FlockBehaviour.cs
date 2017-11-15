@@ -6,16 +6,16 @@ namespace Facehead
 {
     public class FlockBehaviour : MonoBehaviour
     {
-        // fields
+        // fields        
+        public float max_speed = 75;
+        public float max_force = 20;
+        public float alignmentScale = 5;
+        public float cohesionScale = 20;
+        public float dispersionScale = 40;
+        public float dispersion_distance = 2;        
+        public float neighbor_distance = 10;
         public List<Boid> boidList = new List<Boid>();
-        public float max_speed;
-        public float max_force = 100;
-        public float alignmentScale = 1;
-        public float cohesionScale = 5;
-        public float dispersionScale = 10;
-        public float dispersion_distance = 5;        
-        public float neighbor_distance = 10;       
-       
+
         // methods
         public Vector3 Get_Center()
         {
@@ -39,9 +39,12 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    percievedCenter += b.Position;
-                }                
-            }           
+                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
+                    {
+                        percievedCenter += b.Position;
+                    }
+                }
+            }
             
             percievedCenter = percievedCenter / (boidList.Count - 1);
 
@@ -58,9 +61,12 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((b.Position - boid.Position).magnitude < dispersion_distance)
+                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
                     {
-                        force = force - (b.Position - boid.Position);
+                        if ((b.Position - boid.Position).magnitude < dispersion_distance)
+                        {
+                            force = force - (b.Position - boid.Position);
+                        }
                     }
                 }
             }
@@ -78,7 +84,10 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    percievedVelocity += b.Velocity;
+                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
+                    {
+                        percievedVelocity += b.Velocity;
+                    }
                 }
             }
 
@@ -98,8 +107,7 @@ namespace Facehead
         private void Update()
         {
             foreach (var b in boidList)
-            {
-                //b.Set_Neighbors(neighbor_distance);
+            {                
                 b.Max_Speed = max_speed;
 
                 var v1 = Cohesion(b);

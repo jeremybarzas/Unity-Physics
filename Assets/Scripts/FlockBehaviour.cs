@@ -29,6 +29,13 @@ namespace Facehead
         private void Start()
         {
             boidList = AgentFactory.Get_Boids();
+            Max_Speed.value = max_speed;
+            Max_Force.value = max_force;
+            Alignment_Scale.value = alignmentScale;
+            Cohesion_Scale.value = cohesionScale;
+            Dispersion_Scale.value = dispersionScale;
+            Dispersion_Distance.value = dispersion_distance;
+            Neighbor_Distance.value = neighbor_distance;
         }
 
         private void Update()

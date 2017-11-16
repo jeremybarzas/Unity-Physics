@@ -24,7 +24,7 @@ namespace Facehead
             {                
                 var go = Instantiate(boidPrefab);
                 go.hideFlags = HideFlags.HideInHierarchy;
-                var skeleton = go.AddComponent<BoidBehaviour>();                
+                var skeleton = go.AddComponent<BoidBehaviour>();
                 var boid = ScriptableObject.CreateInstance<Boid>();
                 
                 boid.Initialize();

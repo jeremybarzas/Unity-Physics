@@ -10,11 +10,90 @@ namespace Facehead
         public float max_speed = 75;
         public float max_force = 20;
         public float alignmentScale = 5;
-        public float cohesionScale = 20;
-        public float dispersionScale = 40;
-        public float dispersion_distance = 2;        
-        public float neighbor_distance = 10;
+        private float cohesionScale = 20;
+        private float dispersionScale = 40;
+        private float dispersion_distance = 2;
+        private float neighbor_distance = 10;
         public List<Boid> boidList = new List<Boid>();
+
+        // properties
+        public float Max_Speed
+        {
+            get { return Max_Speed; }
+            set { Max_Speed = value; }
+        }
+        public float Max_Force
+        {
+            get
+            {
+                return max_force;
+            }
+
+            set
+            {
+                max_force = value;
+            }
+        }
+        public float AlignmentScale
+        {
+            get
+            {
+                return alignmentScale;
+            }
+
+            set
+            {
+                alignmentScale = value;
+            }
+        }
+        public float CohesionScale
+        {
+            get
+            {
+                return cohesionScale;
+            }
+
+            set
+            {
+                cohesionScale = value;
+            }
+        }
+        public float DispersionScale
+        {
+            get
+            {
+                return dispersionScale;
+            }
+
+            set
+            {
+                dispersionScale = value;
+            }
+        }
+        public float Dispersion_Distance
+        {
+            get
+            {
+                return dispersion_distance;
+            }
+
+            set
+            {
+                dispersion_distance = value;
+            }
+        }
+        public float Neighbor_Distance
+        {
+            get
+            {
+                return neighbor_distance;
+            }
+
+            set
+            {
+                neighbor_distance = value;
+            }
+        }
 
         // methods
         public Vector3 Get_Center()
@@ -39,7 +118,7 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
+                    if ((boid.Position - b.Position).magnitude < Neighbor_Distance)
                     {
                         percievedCenter += b.Position;
                     }
@@ -49,7 +128,7 @@ namespace Facehead
             percievedCenter = percievedCenter / (boidList.Count - 1);
 
             force = (percievedCenter - boid.Position);
-            force = Vector3.ClampMagnitude(force, max_force);
+            force = Vector3.ClampMagnitude(force, Max_Force);
             return force;
         }
 
@@ -61,9 +140,9 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
+                    if ((boid.Position - b.Position).magnitude < Neighbor_Distance)
                     {
-                        if ((b.Position - boid.Position).magnitude < dispersion_distance)
+                        if ((b.Position - boid.Position).magnitude < Dispersion_Distance)
                         {
                             force = force - (b.Position - boid.Position);
                         }
@@ -71,7 +150,7 @@ namespace Facehead
                 }
             }
 
-            force = Vector3.ClampMagnitude(force, max_force);
+            force = Vector3.ClampMagnitude(force, Max_Force);
             return force;
         }
 
@@ -84,7 +163,7 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
+                    if ((boid.Position - b.Position).magnitude < Neighbor_Distance)
                     {
                         percievedVelocity += b.Velocity;
                     }
@@ -94,7 +173,7 @@ namespace Facehead
             percievedVelocity = percievedVelocity / (boidList.Count - 1);
 
             force = (boid.Velocity - percievedVelocity);
-            force = Vector3.ClampMagnitude(force, max_force);
+            force = Vector3.ClampMagnitude(force, Max_Force);
             return force;
         }
 
@@ -108,15 +187,15 @@ namespace Facehead
         {
             foreach (var b in boidList)
             {                
-                b.Max_Speed = max_speed;
+                b.Max_Speed = Max_Speed;
 
                 var v1 = Cohesion(b);
                 var v2 = Dispersion(b);
                 var v3 = Alignment(b);
                 
-                b.Add_Force(cohesionScale, v1);
-                b.Add_Force(dispersionScale, v2);
-                b.Add_Force(alignmentScale, v3);                
+                b.Add_Force(CohesionScale, v1);
+                b.Add_Force(DispersionScale, v2);
+                b.Add_Force(AlignmentScale, v3);                
             }
 
             transform.position = Get_Center();

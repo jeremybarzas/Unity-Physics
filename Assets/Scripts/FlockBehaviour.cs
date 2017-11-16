@@ -8,29 +8,34 @@ namespace Facehead
     public class FlockBehaviour : MonoBehaviour
     {
         // fields        
+        public List<Boid> boidList = new List<Boid>();
         public float max_speed = 75;
         public float max_force = 20;
+        public float seekScale = 1;
         public float alignmentScale = 5;
         public float cohesionScale = 20;
         public float dispersionScale = 40;
         public float dispersion_distance = 2;
         public float neighbor_distance = 10;
-        public List<Boid> boidList = new List<Boid>();
 
         public Slider Max_Speed;
         public Slider Max_Force;
+        public Slider Seek_Scale;
         public Slider Alignment_Scale;
         public Slider Cohesion_Scale;
         public Slider Dispersion_Scale;
         public Slider Dispersion_Distance;
-        public Slider Neighbor_Distance;        
+        public Slider Neighbor_Distance;
 
         // Unity methods
         private void Start()
         {
             boidList = AgentFactory.Get_Boids();
+
+            // assign slider default values
             Max_Speed.value = max_speed;
             Max_Force.value = max_force;
+            Seek_Scale.value = seekScale;
             Alignment_Scale.value = alignmentScale;
             Cohesion_Scale.value = cohesionScale;
             Dispersion_Scale.value = dispersionScale;
@@ -40,6 +45,7 @@ namespace Facehead
 
         private void Update()
         {
+            // add force to all boids
             foreach (var b in boidList)
             {                
                 b.Max_Speed = Max_Speed.value;
@@ -47,29 +53,20 @@ namespace Facehead
                 var v1 = Cohesion(b);
                 var v2 = Dispersion(b);
                 var v3 = Alignment(b);
+                var v4 = Seek(b);
                 
                 b.Add_Force(Cohesion_Scale.value, v1);
                 b.Add_Force(Dispersion_Scale.value, v2);
-                b.Add_Force(Alignment_Scale.value, v3);                
+                b.Add_Force(Alignment_Scale.value, v3);
+                b.Add_Force(Seek_Scale.value, v4);
             }
-
+        }
+        private void LateUpdate()
+        {
             transform.position = Get_Center();
         }
 
         // methods
-        public Vector3 Get_Center()
-        {
-            var center = Vector3.zero;
-
-            foreach (var b in boidList)
-            {
-                center += b.Position;
-            }
-
-            center = center / boidList.Count;
-            return center;
-        }
-
         public Vector3 Cohesion(Boid boid)
         {
             var force = Vector3.zero;
@@ -136,6 +133,29 @@ namespace Facehead
             force = (boid.Velocity - percievedVelocity);
             force = Vector3.ClampMagnitude(force, Max_Force.value);
             return force;
+        }
+
+        public Vector3 Seek(Boid boid)
+        {
+            var force = Vector3.zero;
+            var seekTarget = transform.position;            
+
+            force = (seekTarget - boid.Position);
+            force = Vector3.ClampMagnitude(force, Max_Force.value);
+            return force;
+        }
+
+        public Vector3 Get_Center()
+        {
+            var center = Vector3.zero;
+
+            foreach (var b in boidList)
+            {
+                center += b.Position;
+            }
+
+            center = center / boidList.Count;
+            return center;
         }
     }
 }

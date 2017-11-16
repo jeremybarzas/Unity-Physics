@@ -3,27 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SliderBehaviour : MonoBehaviour
+namespace Facehead
 {
-    public Slider sliderComponent;
-    public Text textComponent;
-    
-    // Unity methods
-    void Start ()
+    public class SliderBehaviour : MonoBehaviour
     {
-        sliderComponent = GetComponent<Slider>();
-        textComponent = GetComponentInChildren<Text>();
-        Set_Text();
-    }	
-	
-	void Update ()
-    {
-        Set_Text();
-    }
+        public Slider sliderComponent;
+        public Text textComponent;
 
-    // methods
-    private void Set_Text()
-    {
-        textComponent.text = textComponent.name + ": " + ((int)sliderComponent.value).ToString();
+        // Unity methods
+        void Start()
+        {
+            sliderComponent = GetComponent<Slider>();
+            textComponent = GetComponentInChildren<Text>();
+            Set_Text();
+        }
+
+        void Update()
+        {
+            Set_Text();
+        }
+
+        // methods
+        private void Set_Text()
+        {
+            textComponent.text = textComponent.name + ": " + ((int)sliderComponent.value).ToString();
+        }
     }
 }

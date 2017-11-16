@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Facehead
@@ -15,23 +14,34 @@ namespace Facehead
         public static List<Agent> Agents
         {
             get { return agentList; }
+        }      
+
+        // Unity methods
+        private void Awake()
+        {            
+            Spawn_Flock();
         }
 
         // methods      
-        public void Create()
+        public void Spawn_Flock()
         {
             for (int i = 0; i < Count; i++)
-            {                
-                var go = Instantiate(boidPrefab);
-                go.hideFlags = HideFlags.HideInHierarchy;
-                var skeleton = go.AddComponent<BoidBehaviour>();
-                var boid = ScriptableObject.CreateInstance<Boid>();
-                
-                boid.Initialize();
-                skeleton.Set_Moveable(boid);
-                agentList.Add(boid);
+            {
+                Spawn_Boid();
             }
         }
+
+        public void Spawn_Boid()
+        {
+            var go = Instantiate(boidPrefab);
+            go.hideFlags = HideFlags.HideInHierarchy;
+            var skeleton = go.AddComponent<BoidBehaviour>();
+            var boid = ScriptableObject.CreateInstance<Boid>();
+
+            boid.Initialize();
+            skeleton.Set_Moveable(boid);
+            agentList.Add(boid);
+        }        
 
         public static List<Boid> Get_Boids()
         {
@@ -43,12 +53,6 @@ namespace Facehead
             }
 
             return boids;
-        }
-
-        // Unity methods
-        private void Awake()
-        {
-            Create();
-        }
+        }       
     }
 }

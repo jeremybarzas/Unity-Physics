@@ -9,18 +9,18 @@ namespace Facehead
         // fields
         public IMoveable moveable;
 
+        // Unity methods
+        public void LateUpdate()
+        {
+            transform.position = moveable.Update_Agent(Time.deltaTime);
+            transform.forward = agent.Velocity.normalized / Time.deltaTime;
+        }
+
         // methods
         public void Set_Moveable(Boid b)
         {            
             agent = b;
             moveable = b;
-        }
-
-        // Unity methods
-        public void LateUpdate()
-        {
-            transform.position = moveable.Update_Agent(Time.deltaTime);
-            transform.forward = agent.Velocity.normalized;
         }
     }
 }

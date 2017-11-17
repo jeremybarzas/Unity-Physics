@@ -9,7 +9,6 @@ namespace Facehead
     {
         // fields
         private float fps = 0;
-        private float avgFps = 0;
 
         // Unity methods
         private void Start()
@@ -19,10 +18,9 @@ namespace Facehead
 
         private void Update()
         {
-            string s1 = "FPS: " + fps;
-            string s2 = "Avg FPS: " + avgFps;
-            string s3 = "Boid Count: " + AgentFactory.Get_Boids().Count;
-            string updatedText = s1 + "\n" + s2 + "\n" + s3;
+            string s1 = "FPS: " + fps;            
+            string s2 = "Boid Count: " + AgentFactory.Get_Boids().Count;
+            string updatedText = s1 + "\n" + s2;
             GetComponent<Text>().text = updatedText;
         }
 

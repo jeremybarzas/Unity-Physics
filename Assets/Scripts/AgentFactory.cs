@@ -8,28 +8,28 @@ namespace Facehead
     {
         // fields
         public GameObject boidPrefab;
-        public int Count;
+        public int Count = 100;
         private static List<Agent> agentList = new List<Agent>();
+        public List<GameObject> boidList = new List<GameObject>();
 
         public Slider Boid_Count;
         public Button Respawn_Boids;
+                
+        public List<Agent> agents
+        {
+            get { return agentList; }
+        }
 
         // Unity methods
         private void Awake()
-        {            
-            
+        {
+            Respawn_Boids.onClick.AddListener(Respawn_Flock);            
         }
 
         private void Start()
         {
             Boid_Count.value = Count;
-            Respawn_Boids.onClick.AddListener(Respawn_Flock);
             Spawn_Flock();
-        }
-
-        private void Update()
-        {
-            //Count = (int)Boid_Count.value;
         }
 
         // methods      
@@ -44,10 +44,11 @@ namespace Facehead
         public void Spawn_Boid()
         {
             var go = Instantiate(boidPrefab);
-            go.hideFlags = HideFlags.HideInHierarchy;
             var skeleton = go.AddComponent<BoidBehaviour>();
             var boid = ScriptableObject.CreateInstance<Boid>();
 
+            //go.hideFlags = HideFlags.HideInHierarchy;
+            boidList.Add(go);
             boid.Initialize();
             skeleton.Set_Moveable(boid);
             agentList.Add(boid);
@@ -65,14 +66,23 @@ namespace Facehead
             return boids;
         }
 
-        public static void Respawn_Flock()
-        {            
-            var boids = FindObjectsOfType<BoidBehaviour>();
-            foreach (var b in boids)
+        public void Respawn_Flock()
+        {   
+            // destroy and clear all boid prefab instances
+            for (int i = boidList.Count - 1; i >= 0; i--)
             {
-                Destroy(b);
+                Destroy(boidList[i]);
+                boidList.RemoveAt(i);      
+            }            
+
+            // removes all agent scriptable objects
+            for (int i = agentList.Count - 1; i >= 0; i--)
+            {
+                agentList.RemoveAt(i);
             }
-            //boids = FindObjectsOfType<Boid>();
+            
+            // recreates the flock based on new count
+            Spawn_Flock();            
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Facehead
         public float cohesionScale = 20;
         public float dispersionScale = 40;
         public float dispersion_distance = 2;
-        public float neighbor_distance = 10;        
+        public float neighbor_distance = 10;
 
         public Slider Max_Speed;
         public Slider Max_Force;
@@ -47,7 +47,12 @@ namespace Facehead
         }
 
         private void Update()
-        {   
+        {
+            if (boidList != AgentFactory.Get_Boids())
+            {
+                boidList = AgentFactory.Get_Boids();
+            }
+
             // add force to all boids
             foreach (var b in boidList)
             {                

@@ -18,17 +18,19 @@ namespace Facehead
         public float dispersion_distance = 2;
         public float neighbor_distance = 10;
 
-        public Slider Max_Speed;
-        public Slider Max_Force;
-        public Slider Seek_Scale;
-        public Slider Alignment_Scale;
-        public Slider Cohesion_Scale;
-        public Slider Dispersion_Scale;
-        public Slider Dispersion_Distance;
-        public Slider Neighbor_Distance;
+        public FloatVariable Max_Speed;
+        public FloatVariable Max_Force;
+        public FloatVariable Seek_Scale;
+        public FloatVariable Alignment_Scale;
+        public FloatVariable Cohesion_Scale;
+        public FloatVariable Dispersion_Scale;
+        public FloatVariable Dispersion_Distance;
+        public FloatVariable Neighbor_Distance;
 
         public Vector3 flockCenter = Vector3.zero;
         public Vector3 flockForward = Vector3.zero;
+
+        public GameObject seekTarget;
 
         // Unity methods
         private void Start()
@@ -153,9 +155,9 @@ namespace Facehead
         public Vector3 Seek(Boid boid)
         {
             var force = Vector3.zero;
-            var seekTarget = transform.position;            
+            var seektarget = seekTarget.transform.position;            
 
-            force = (seekTarget - boid.Position);
+            force = (seektarget - boid.Position);
             force = Vector3.ClampMagnitude(force, Max_Force.value);
             return force;
         }       

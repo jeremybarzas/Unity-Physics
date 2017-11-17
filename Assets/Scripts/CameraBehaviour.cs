@@ -25,6 +25,8 @@ namespace Facehead
         private void LateUpdate()
         {
             Check_Input();
+
+            ScreenToWorld();
         }
 
         // methods
@@ -60,6 +62,24 @@ namespace Facehead
                     transform.Rotate(newRotation);
                 }
             }
+        }
+
+        public void ScreenToWorld()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                var mouseX = Input.GetAxis("Horizontal");
+                var mouseY = Input.GetAxis("Vertical");
+
+                var point = camera.ScreenToWorldPoint(new Vector3(mouseX, mouseY, camera.nearClipPlane));                
+                point.Normalize();
+
+                Ray ray = new Ray(camera.transform.position, point);
+                var rayPoint = ray.GetPoint(100);
+
+                Debug.Log("Camera Pos: " + camera.transform.position);
+                Debug.Log("RayTarget: " + rayPoint);
+            }            
         }
     }
 }

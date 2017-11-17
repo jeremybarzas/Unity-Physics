@@ -12,7 +12,7 @@ namespace Facehead
         private static List<Agent> agentList = new List<Agent>();
         public List<GameObject> boidList = new List<GameObject>();
 
-        public Slider Boid_Count;
+        public FloatVariable Boid_Count;
         public Button Respawn_Boids;
                 
         public List<Agent> agents
@@ -32,10 +32,15 @@ namespace Facehead
             Spawn_Flock();
         }
 
+        private void Update()
+        {
+            Count = (int)Boid_Count.value;
+        }
+
         // methods      
         public void Spawn_Flock()
         {
-            for (int i = 0; i < Boid_Count.value; i++)
+            for (int i = 0; i < Count; i++)
             {
                 Spawn_Boid();
             }
@@ -47,7 +52,7 @@ namespace Facehead
             var skeleton = go.AddComponent<BoidBehaviour>();
             var boid = ScriptableObject.CreateInstance<Boid>();
 
-            //go.hideFlags = HideFlags.HideInHierarchy;
+            go.hideFlags = HideFlags.HideInHierarchy;
             boidList.Add(go);
             boid.Initialize();
             skeleton.Set_Moveable(boid);

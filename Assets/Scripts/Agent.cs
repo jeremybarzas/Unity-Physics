@@ -48,6 +48,6 @@ namespace Facehead
         }
 
         // methods
-        public abstract void Initialize();
+        public abstract void Initialize(float mass, float maxSpeed);
     }
 }

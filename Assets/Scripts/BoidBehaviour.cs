@@ -7,20 +7,20 @@ namespace Facehead
     public class BoidBehaviour : AgentBehaviour
     {
         // fields
-        public IMoveable moveable;
+        public Boid boid;
 
         // Unity methods
         public void LateUpdate()
         {
-            transform.position = moveable.Update_Agent(Time.deltaTime);
+            transform.position = boid.Update_Agent(Time.deltaTime);
             transform.forward = agent.Velocity.normalized / Time.deltaTime;
         }
 
         // methods
-        public void Set_Moveable(Boid b)
+        public void Set_Boid(Boid b)
         {            
             agent = b;
-            moveable = b;
+            boid = b;
         }
     }
 }

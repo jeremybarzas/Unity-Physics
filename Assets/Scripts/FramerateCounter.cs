@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Facehead
 {
-    public class FPSCounter : MonoBehaviour
+    public class FramerateCounter : MonoBehaviour
     {
         // fields
         private float fps = 0;

@@ -14,11 +14,6 @@ namespace Facehead
 
         public FloatVariable Boid_Count;
         public Button Respawn_Boids;
-                
-        public List<Agent> agents
-        {
-            get { return agentList; }
-        }
 
         // Unity methods
         private void Awake()
@@ -54,10 +49,10 @@ namespace Facehead
 
             go.hideFlags = HideFlags.HideInHierarchy;
             boidList.Add(go);
-            boid.Initialize();
-            skeleton.Set_Moveable(boid);
+            boid.Initialize(1, 50);
+            skeleton.Set_Boid(boid);
             agentList.Add(boid);
-        }        
+        }
 
         public static List<Boid> Get_Boids()
         {

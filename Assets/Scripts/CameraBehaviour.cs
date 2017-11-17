@@ -34,7 +34,7 @@ namespace Facehead
         {
             /*========== Mouse Wheel Zoom ==========*/
             // get mouse wheel input
-            var mouseWheelDelta = (Input.GetAxisRaw("Mouse ScrollWheel") * scrollSpeed * 10);
+            var mouseWheelDelta = ((Input.GetAxisRaw("Mouse ScrollWheel") * scrollSpeed * 100) * Time .deltaTime);
 
             // check for change in mouse wheel
             if (mouseWheelDelta != 0)

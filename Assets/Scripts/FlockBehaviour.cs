@@ -27,10 +27,10 @@ namespace Facehead
         public FloatVariable Dispersion_Distance;
         public FloatVariable Neighbor_Distance;
 
-        public Vector3 flockCenter = Vector3.zero;
-        public Vector3 flockForward = Vector3.zero;
-
         public GameObject seekTarget;
+
+        public Vector3 flockCenter = Vector3.zero;
+        public Vector3 flockForward = Vector3.zero;        
 
         // Unity methods
         private void Start()
@@ -50,6 +50,7 @@ namespace Facehead
 
         private void Update()
         {
+            // NOT SCALEABLE CODE
             if (boidList != AgentFactory.Get_Boids())
             {
                 boidList = AgentFactory.Get_Boids();

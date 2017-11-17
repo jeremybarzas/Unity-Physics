@@ -4,10 +4,21 @@ using UnityEngine;
 
 namespace Facehead
 {
-    [CreateAssetMenu(menuName = "Agent/Boid")]
-    public class Boid : Agent, IMoveable
-    {            
-        // interface methods        
+    [CreateAssetMenu(menuName = "Scriptables/Boid")]
+    public class Boid : Agent
+    {
+        // inherited methods
+        public override void Initialize(float m, float maxSpeed)
+        {
+            max_speed = maxSpeed;
+            mass = m;
+            velocity = Random.onUnitSphere;
+            position = Vector3.zero;
+            acceleration = Vector3.zero;
+            force = Vector3.zero;
+        }
+
+        // methods        
         public bool Add_Force(float mag, Vector3 newForce)
         {
             // check for any change in velocity
@@ -16,6 +27,17 @@ namespace Facehead
 
             // apply force
             force += newForce * mag;
+            return true;
+        }
+
+        public bool Add_Force(Vector3 newForce)
+        {
+            // check for any change in velocity
+            if (newForce.Equals(new Vector3(0, 0, 0)))
+                return false;
+
+            // apply force
+            force += newForce;
             return true;
         }
 
@@ -28,16 +50,5 @@ namespace Facehead
             force = Vector3.zero;
             return position;
         }
-
-        // inherited methods
-        public override void Initialize()
-        {
-            max_speed = 50;
-            mass = 1;
-            velocity = Random.onUnitSphere;
-            position = Vector3.zero;
-            acceleration = Vector3.zero;
-            force = Vector3.zero;
-        }       
     }
 }

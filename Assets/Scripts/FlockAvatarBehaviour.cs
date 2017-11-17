@@ -6,27 +6,18 @@ namespace Facehead
 {
     public class FlockAvatarBehaviour : MonoBehaviour
     {
-        public List<Boid> boids;
+        // fields
+        public FlockBehaviour parent;
 
         // Unity methods
-        private void LateUpdate()
+        private void Start()
         {
-            boids = GetComponentInParent<FlockBehaviour>().boidList;
-            transform.forward = Get_Forward();
+            parent = GetComponentInParent<FlockBehaviour>();
         }
 
-        // methods
-        public Vector3 Get_Forward()
-        {
-            var forward = Vector3.zero;
-             
-            foreach (var b in boids)
-            {
-                forward += b.Velocity;
-            }
-
-            forward = forward / boids.Count;
-            return forward.normalized;
+        private void LateUpdate()
+        {            
+            transform.forward = parent.flockForward.normalized;
         }
     }
 }

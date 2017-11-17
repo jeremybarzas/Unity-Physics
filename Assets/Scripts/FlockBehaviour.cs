@@ -16,7 +16,7 @@ namespace Facehead
         public float cohesionScale = 20;
         public float dispersionScale = 40;
         public float dispersion_distance = 2;
-        public float neighbor_distance = 10;
+        public float neighbor_distance = 10;        
 
         public Slider Max_Speed;
         public Slider Max_Force;
@@ -27,10 +27,13 @@ namespace Facehead
         public Slider Dispersion_Distance;
         public Slider Neighbor_Distance;
 
+        public Vector3 flockCenter = Vector3.zero;
+        public Vector3 flockForward = Vector3.zero;
+
         // Unity methods
         private void Start()
         {
-            boidList = AgentFactory.Get_Boids();
+            boidList = AgentFactory.Get_Boids();            
 
             // assign slider default values
             Max_Speed.value = max_speed;
@@ -40,11 +43,11 @@ namespace Facehead
             Cohesion_Scale.value = cohesionScale;
             Dispersion_Scale.value = dispersionScale;
             Dispersion_Distance.value = dispersion_distance;
-            Neighbor_Distance.value = neighbor_distance;
+            Neighbor_Distance.value = neighbor_distance;            
         }
 
         private void Update()
-        {
+        {   
             // add force to all boids
             foreach (var b in boidList)
             {                
@@ -59,11 +62,18 @@ namespace Facehead
                 b.Add_Force(Dispersion_Scale.value, v2);
                 b.Add_Force(Alignment_Scale.value, v3);
                 b.Add_Force(Seek_Scale.value, v4);
+
+                flockCenter += b.Position;
+                flockForward += b.Velocity;
             }
+
+            flockCenter /= boidList.Count;
+            flockForward /= boidList.Count;          
         }
+
         private void LateUpdate()
         {
-            transform.position = Get_Center();
+            transform.position = flockCenter;
         }
 
         // methods
@@ -143,19 +153,6 @@ namespace Facehead
             force = (seekTarget - boid.Position);
             force = Vector3.ClampMagnitude(force, Max_Force.value);
             return force;
-        }
-
-        public Vector3 Get_Center()
-        {
-            var center = Vector3.zero;
-
-            foreach (var b in boidList)
-            {
-                center += b.Position;
-            }
-
-            center = center / boidList.Count;
-            return center;
-        }
+        }       
     }
 }

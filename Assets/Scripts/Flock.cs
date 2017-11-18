@@ -9,61 +9,13 @@ namespace Facehead
     {
         // fields
         [SerializeField]
-        List<Boid> boid_list;
+        private FlockStats flock_config;
         [SerializeField]
-        float max_speed;
+        private FlockStats flock_stats;
         [SerializeField]
-        float max_force;
-        [SerializeField]
-        float seek_scale;
-        [SerializeField]
-        float alignment_scale;
-        [SerializeField]
-        float cohesion_scale;
-        [SerializeField]
-        float dispersion_scale;
-        [SerializeField]
-        float dispersion_distance;
-        [SerializeField]
-        float neighbor_distance;
+        private List<Boid> boid_list;
 
         // properties
-        public List<Boid> Boid_List
-        {
-            get { return boid_list; }            
-        }        
-        public float Max_Speed
-        {
-            get { return max_speed; }            
-        }
-        public float Max_Force
-        {
-            get { return max_force; }            
-        }
-        public float Seek_Scale
-        {
-            get { return seek_scale; }
-        }
-        public float Alignment_Scale
-        {
-            get { return alignment_scale; }
-        }
-        public float Cohesion_Scale
-        {
-            get { return cohesion_scale; }
-        }
-        public float Dispersion_Scale
-        {
-            get { return dispersion_scale; }
-        }
-        public float Dispersion_Distance
-        {
-            get { return dispersion_distance; }
-        }
-        public float Neighbor_Distance
-        {
-            get { return neighbor_distance; }
-        }
         public Vector3 Seek_Target
         {
             get;
@@ -81,26 +33,29 @@ namespace Facehead
         }
 
         // methods
+        public void Initialize()
+        {
+            flock_stats = Instantiate(flock_config);
+            boid_list = new List<Boid>();
+            Seek_Target = Vector3.zero;
+            Flock_Center = Vector3.zero;
+            Flock_Forward = Vector3.zero;
+        }
+
         public void Update_Flock()
         {
             foreach (Boid b in boid_list)
             {
                 var force = Vector3.zero;
 
-                force += Cohesion(b) * Cohesion_Scale;
-                force += Dispersion(b) * Dispersion_Scale;
-                force += Alignment(b) * Alignment_Scale;
-                force += Seek(b) * Seek_Scale;
+                force += Cohesion(b) * flock_stats.cohesion_scale;
+                force += Dispersion(b) * flock_stats.dispersion_scale;
+                force += Alignment(b) * flock_stats.alignment_scale;
+                force += Seek(b) * flock_stats.seek_scale;
 
-                force = Vector3.ClampMagnitude(force, max_force);
-                b.Add_Force(force);
-
-                Flock_Center += b.Position;
-                Flock_Forward += b.Velocity;
+                force = Vector3.ClampMagnitude(force, flock_stats.max_force);
+                b.Add_Force(force);   
             }
-
-            Flock_Center /= boid_list.Count;
-            Flock_Forward /= boid_list.Count;
         }
 
         public void Add_Boid(Boid b)
@@ -115,24 +70,28 @@ namespace Facehead
 
         public Vector3 Cohesion(Boid boid)
         {
+            Flock_Center = Vector3.zero;
+
             var force = Vector3.zero;
             var percievedCenter = Vector3.zero;
-
+            
             foreach (var b in boid_list)
             {
+                Flock_Center += b.Position;
+
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
-                    {
+                    if ((boid.Position - b.Position).magnitude < flock_stats.neighbor_distance)
+                    {                        
                         percievedCenter += b.Position;
                     }
                 }
             }
 
-            percievedCenter = percievedCenter / (boid_list.Count - 1);
+            Flock_Center /= boid_list.Count;
 
-            force = (percievedCenter - boid.Position);
-            force = Vector3.ClampMagnitude(force, max_force);
+            percievedCenter = percievedCenter / (boid_list.Count - 1);
+            force = (percievedCenter - boid.Position);            
             return force;
         }
 
@@ -144,40 +103,42 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
+                    if ((boid.Position - b.Position).magnitude < flock_stats.neighbor_distance)
                     {
-                        if ((b.Position - boid.Position).magnitude < dispersion_distance)
+                        if ((b.Position - boid.Position).magnitude < flock_stats.dispersion_distance)
                         {
                             force = force - (b.Position - boid.Position);
                         }
                     }
                 }
             }
-
-            force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
 
         public Vector3 Alignment(Boid boid)
         {
+            Flock_Forward = Vector3.zero;
+
             var force = Vector3.zero;
             var percievedVelocity = Vector3.zero;
 
             foreach (var b in boid_list)
             {
+                Flock_Forward += b.Velocity;
+
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
+                    if ((boid.Position - b.Position).magnitude < flock_stats.neighbor_distance)
                     {
                         percievedVelocity += b.Velocity;
                     }
                 }
             }
 
-            percievedVelocity = percievedVelocity / (boid_list.Count - 1);
+            Flock_Forward /= boid_list.Count;
 
+            percievedVelocity = percievedVelocity / (boid_list.Count - 1);
             force = (boid.Velocity - percievedVelocity);
-            force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
 
@@ -185,9 +146,28 @@ namespace Facehead
         {
             var force = Vector3.zero;
 
-            force = (Seek_Target - boid.Position);
-            force = Vector3.ClampMagnitude(force, max_force);
+            force = (Seek_Target - boid.Position);            
             return force;
         }
+
+        public void DebugStats()
+        {
+            if (Input.GetKeyDown("space"))
+            {
+                if (flock_stats.GetInstanceID() == flock_config.GetInstanceID())
+                    Debug.Log("InstanceID Indentical");
+                else
+                    Debug.Log("InstanceID Different");
+
+                Debug.Log("flock_config speed: " + flock_config.max_speed);
+                Debug.Log("flock_stats speed: " + flock_stats.max_speed);
+
+                Debug.Log("flock_stats.speed -= 1f;");
+                flock_stats.max_speed -= 1f;
+
+                Debug.Log("flock_config speed: " + flock_config.max_speed);
+                Debug.Log("flock_stats speed: " + flock_stats.max_speed);
+            }
+        }            
     }
 }

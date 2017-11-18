@@ -9,14 +9,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5db355acec4a82a4b86ae1f83b864e77, type: 3}
-  m_Name: FlockData
+  m_Name: Flock1
   m_EditorClassIdentifier: 
+  flock_config: {fileID: 11400000, guid: 73d672e23c0499d49a88585244266403, type: 2}
+  flock_stats: {fileID: 0}
   boid_list: []
-  max_speed: 75
-  max_force: 25
-  seek_scale: 0
-  alignment_scale: 1
-  cohesion_scale: 3
-  dispersion_scale: 5
-  dispersion_distance: 10
-  neighbor_distance: 300

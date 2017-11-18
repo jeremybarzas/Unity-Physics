@@ -160,18 +160,6 @@ namespace Facehead
             force = (seektarget - boid.Position);
             force = Vector3.ClampMagnitude(force, Max_Force.value);
             return force;
-        }
-
-        //public Flock flock;
-
-        //private void Update()
-        //{
-        //    flock.Update_Flock();
-        //}
-
-        //private void FixedUpdate()
-        //{
-        //    transform.position = flock.Flock_Center;
-        //}
+        }        
     }
 }

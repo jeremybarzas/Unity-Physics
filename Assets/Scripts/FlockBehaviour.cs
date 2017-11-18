@@ -30,12 +30,12 @@ namespace Facehead
         public GameObject seekTarget;
 
         public Vector3 flockCenter = Vector3.zero;
-        public Vector3 flockForward = Vector3.zero;        
+        public Vector3 flockForward = Vector3.zero;
 
         // Unity methods
         private void Start()
         {
-            boidList = AgentFactory.Get_Boids();            
+            boidList = AgentFactory.Get_Boids();
 
             // assign slider default values
             Max_Speed.value = max_speed;
@@ -45,12 +45,11 @@ namespace Facehead
             Cohesion_Scale.value = cohesionScale;
             Dispersion_Scale.value = dispersionScale;
             Dispersion_Distance.value = dispersion_distance;
-            Neighbor_Distance.value = neighbor_distance;            
+            Neighbor_Distance.value = neighbor_distance;
         }
 
         private void Update()
         {
-            // NOT SCALEABLE CODE
             if (boidList != AgentFactory.Get_Boids())
             {
                 boidList = AgentFactory.Get_Boids();
@@ -58,14 +57,14 @@ namespace Facehead
 
             // add force to all boids
             foreach (var b in boidList)
-            {                
+            {
                 b.Max_Speed = Max_Speed.value;
 
                 var v1 = Cohesion(b);
                 var v2 = Dispersion(b);
                 var v3 = Alignment(b);
                 var v4 = Seek(b);
-                
+
                 b.Add_Force(Cohesion_Scale.value, v1);
                 b.Add_Force(Dispersion_Scale.value, v2);
                 b.Add_Force(Alignment_Scale.value, v3);
@@ -76,7 +75,7 @@ namespace Facehead
             }
 
             flockCenter /= boidList.Count;
-            flockForward /= boidList.Count;          
+            flockForward /= boidList.Count;
         }
 
         private void LateUpdate()
@@ -156,11 +155,23 @@ namespace Facehead
         public Vector3 Seek(Boid boid)
         {
             var force = Vector3.zero;
-            var seektarget = seekTarget.transform.position;            
+            var seektarget = seekTarget.transform.position;
 
             force = (seektarget - boid.Position);
             force = Vector3.ClampMagnitude(force, Max_Force.value);
             return force;
-        }       
+        }
+
+        //public Flock flock;
+
+        //private void Update()
+        //{
+        //    flock.Update_Flock();
+        //}
+
+        //private void FixedUpdate()
+        //{
+        //    transform.position = flock.Flock_Center;
+        //}
     }
 }

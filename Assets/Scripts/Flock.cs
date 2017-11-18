@@ -8,15 +8,24 @@ namespace Facehead
     public class Flock : ScriptableObject
     {
         // fields
+        [SerializeField]
         List<Boid> boid_list;
-        FloatVariable max_speed;
-        FloatVariable max_force;
-        FloatVariable seek_scale;
-        FloatVariable alignment_scale;
-        FloatVariable cohesion_scale;
-        FloatVariable dispersion_scale;
-        FloatVariable dispersion_distance;
-        FloatVariable neighbor_distance;
+        [SerializeField]
+        float max_speed;
+        [SerializeField]
+        float max_force;
+        [SerializeField]
+        float seek_scale;
+        [SerializeField]
+        float alignment_scale;
+        [SerializeField]
+        float cohesion_scale;
+        [SerializeField]
+        float dispersion_scale;
+        [SerializeField]
+        float dispersion_distance;
+        [SerializeField]
+        float neighbor_distance;
 
         // properties
         public List<Boid> Boid_List
@@ -25,45 +34,47 @@ namespace Facehead
         }        
         public float Max_Speed
         {
-            get { return max_speed.value; }
-            set { max_speed.value = value; }
+            get { return max_speed; }            
         }
         public float Max_Force
         {
-            get { return max_force.value; }
-            set { max_force.value = value; }
+            get { return max_force; }            
         }
         public float Seek_Scale
         {
-            get { return seek_scale.value; }
-            set { seek_scale.value = value; }
+            get { return seek_scale; }
         }
         public float Alignment_Scale
         {
-            get { return alignment_scale.value; }
-            set { alignment_scale.value = value; }
+            get { return alignment_scale; }
         }
         public float Cohesion_Scale
         {
-            get { return cohesion_scale.value; }
-            set { cohesion_scale.value = value; }
+            get { return cohesion_scale; }
         }
         public float Dispersion_Scale
         {
-            get { return dispersion_scale.value; }
-            set { dispersion_scale.value = value; }
+            get { return dispersion_scale; }
         }
         public float Dispersion_Distance
         {
-            get { return dispersion_distance.value; }
-            set { dispersion_distance.value = value; }
+            get { return dispersion_distance; }
         }
         public float Neighbor_Distance
         {
-            get { return neighbor_distance.value; }
-            set { neighbor_distance.value = value; }
+            get { return neighbor_distance; }
         }
         public Vector3 Seek_Target
+        {
+            get;
+            set;
+        }
+        public Vector3 Flock_Center
+        {
+            get;
+            set;
+        }
+        public Vector3 Flock_Forward
         {
             get;
             set;
@@ -81,9 +92,15 @@ namespace Facehead
                 force += Alignment(b) * Alignment_Scale;
                 force += Seek(b) * Seek_Scale;
 
-                force = Vector3.ClampMagnitude(force, max_force.value);
+                force = Vector3.ClampMagnitude(force, max_force);
                 b.Add_Force(force);
+
+                Flock_Center += b.Position;
+                Flock_Forward += b.Velocity;
             }
+
+            Flock_Center /= boid_list.Count;
+            Flock_Forward /= boid_list.Count;
         }
 
         public void Add_Boid(Boid b)
@@ -105,7 +122,7 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance.value)
+                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
                     {
                         percievedCenter += b.Position;
                     }
@@ -115,7 +132,7 @@ namespace Facehead
             percievedCenter = percievedCenter / (boid_list.Count - 1);
 
             force = (percievedCenter - boid.Position);
-            force = Vector3.ClampMagnitude(force, max_force.value);
+            force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
 
@@ -127,9 +144,9 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance.value)
+                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
                     {
-                        if ((b.Position - boid.Position).magnitude < dispersion_distance.value)
+                        if ((b.Position - boid.Position).magnitude < dispersion_distance)
                         {
                             force = force - (b.Position - boid.Position);
                         }
@@ -137,7 +154,7 @@ namespace Facehead
                 }
             }
 
-            force = Vector3.ClampMagnitude(force, max_force.value);
+            force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
 
@@ -150,7 +167,7 @@ namespace Facehead
             {
                 if (b != boid)
                 {
-                    if ((boid.Position - b.Position).magnitude < neighbor_distance.value)
+                    if ((boid.Position - b.Position).magnitude < neighbor_distance)
                     {
                         percievedVelocity += b.Velocity;
                     }
@@ -160,7 +177,7 @@ namespace Facehead
             percievedVelocity = percievedVelocity / (boid_list.Count - 1);
 
             force = (boid.Velocity - percievedVelocity);
-            force = Vector3.ClampMagnitude(force, max_force.value);
+            force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
 
@@ -169,7 +186,7 @@ namespace Facehead
             var force = Vector3.zero;
 
             force = (Seek_Target - boid.Position);
-            force = Vector3.ClampMagnitude(force, max_force.value);
+            force = Vector3.ClampMagnitude(force, max_force);
             return force;
         }
     }

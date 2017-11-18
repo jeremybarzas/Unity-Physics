@@ -3235,6 +3235,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e321772faaaa074daf04bac2378b9b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flock: {fileID: 0}
   boidList: []
   max_speed: 100
   max_force: 25
@@ -3253,9 +3254,9 @@ MonoBehaviour:
   Dispersion_Distance: {fileID: 11400000, guid: 2618d0694a51e89428bbf21d3cb46cde,
     type: 2}
   Neighbor_Distance: {fileID: 11400000, guid: b2c0c6db5b309b44fb64e79444dc158d, type: 2}
+  seekTarget: {fileID: 1333098534}
   flockCenter: {x: 0, y: 0, z: 0}
   flockForward: {x: 0, y: 0, z: 0}
-  seekTarget: {fileID: 1333098534}
 --- !u!4 &1285805044
 Transform:
   m_ObjectHideFlags: 0
@@ -3883,7 +3884,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1460957629}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -69.86, y: 0, z: 0}
+  m_LocalPosition: {x: -69.72, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 142847109}
@@ -4229,7 +4230,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1460957630}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1000
+  m_MaxValue: 500
   m_WholeNumbers: 1
   m_Value: 1
   m_OnValueChanged:
@@ -4431,7 +4432,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1696382512}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -69.93, y: 0, z: 0}
+  m_LocalPosition: {x: -69.86, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1055630860}

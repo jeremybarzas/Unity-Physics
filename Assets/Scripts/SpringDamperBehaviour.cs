@@ -25,7 +25,7 @@ namespace Facehead
 
         void Update()
         {
-            spring.Update(Time.deltaTime);
+            spring.Update();
         }
     }
 }

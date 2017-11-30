@@ -62,12 +62,7 @@ namespace Facehead
         public float kd;
         public float lo;
 
-        // constant stretch resistance tightness
-        public float k = 1;
-        // displacement from end of spring to resting position
-        public float x;
-        // force spring exerts on the end point to bring it back to resting position
-        public float F;
+        
 
         public Vector3 p1_start;
         public Vector3 p2_start;
@@ -87,7 +82,14 @@ namespace Facehead
 
         }
 
-        public void Update(float deltatime)
+        // constant stretch resistance tightness
+        public float k = 1;
+        // displacement from end of spring to resting position
+        public float x;
+        // force spring exerts on the end point to bring it back to resting position
+        public float F;
+
+        public void Update()
         {            
             var p1_currentPos = p1.position;
             var p2_currentPos = p2.position;

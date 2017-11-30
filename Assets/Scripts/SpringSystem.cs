@@ -57,13 +57,8 @@ namespace Facehead
         // fields        
         public Particle p1;        
         public Particle p2;
-        
-        public float ks;
-        public float kd;
-        public float lo;
 
-        
-
+        public float k = 1;
         public Vector3 p1_start;
         public Vector3 p2_start;
         
@@ -81,13 +76,6 @@ namespace Facehead
         {
 
         }
-
-        // constant stretch resistance tightness
-        public float k = 1;
-        // displacement from end of spring to resting position
-        public float x;
-        // force spring exerts on the end point to bring it back to resting position
-        public float F;
 
         public void Update()
         {            

@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace Facehead
 {
-    public class SpringBehaviour : MonoBehaviour
+    public class SpringDamperBehaviour : MonoBehaviour
     {
         // fields
         [SerializeField]
-        Spring spring;
+        SpringDamper spring;
 
         // methods
         void Start()
         {
-            spring = new Spring();
+            spring = new SpringDamper();
             var go0 = GameObject.CreatePrimitive(0);
             var go1 = GameObject.CreatePrimitive(0);
             var pb0 = go0.AddComponent<ParticleBehaviour>();

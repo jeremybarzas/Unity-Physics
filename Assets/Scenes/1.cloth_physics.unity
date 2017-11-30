@@ -190,7 +190,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 86.72, y: 0, z: 0}
 --- !u!1 &918018102
 GameObject:
@@ -219,7 +219,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &918018104
 MonoBehaviour:
@@ -247,8 +247,11 @@ MonoBehaviour:
       acceleration: {x: 0, y: 0, z: 0}
       force: {x: 0, y: 0, z: 0}
       isKinematic: 0
-    F_springForce: 0
-    x_displacement: 0
-    k_tightness: 1
+    ks: 0
+    kd: 0
+    lo: 0
+    k: 1
+    x: 0
+    F: 0
     p1_start: {x: -5, y: 0, z: 0}
     p2_start: {x: 5, y: 0, z: 0}

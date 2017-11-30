@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Facehead
-{    
+{
     [System.Serializable]
     public class Particle
     {
@@ -41,6 +41,7 @@ namespace Facehead
         {
             if (isKinematic)
                 return position;
+
             acceleration = force / mass;
             velocity += acceleration * deltatime;
 
@@ -51,47 +52,51 @@ namespace Facehead
     }
 
     [System.Serializable]
-    public class Spring
+    public class SpringDamper
     {
-        // fields
-        [SerializeField]
-        public Particle p1;
-        [SerializeField]
+        // fields        
+        public Particle p1;        
         public Particle p2;
-        [SerializeField]
-        public float F_springForce;
-        [SerializeField]
-        public float x_displacement;
-        [SerializeField]
-        public float k_tightness = 1;
+        
+        public float ks;
+        public float kd;
+        public float lo;
+
+        // constant stretch resistance tightness
+        public float k = 1;
+        // displacement from end of spring to resting position
+        public float x;
+        // force spring exerts on the end point to bring it back to resting position
+        public float F;
+
         public Vector3 p1_start;
         public Vector3 p2_start;
         
         // methods
-        public Spring()
+        public SpringDamper()
         {
-            p1_start = new Vector3(-5, 0, 0);
-            p2_start = new Vector3(5, 0, 0);
             p1 = new Particle(1, p1_start * 2, Vector3.right);
             p2 = new Particle(1, p2_start * 2, Vector3.zero);
+
+            p1_start = new Vector3(5, 0, 0);
+            p2_start = new Vector3(-5, 0, 0);
         }
 
-        public Spring(float x, float k, float F) : base()
+        public void Calculate_Force()
         {
-            x_displacement = x;
-            k_tightness = k;
-            F_springForce = F;
+
         }
 
         public void Update(float deltatime)
         {            
             var p1_currentPos = p1.position;
             var p2_currentPos = p2.position;
+
             var p1_x = p1_currentPos - p1_start;
             var p2_x = p2_currentPos - p2_start;
 
-            var p1_force = -k_tightness * p1_x;
-            var p2_force = -k_tightness * p2_x;
+            var p1_force = -k * p1_x;
+            var p2_force = -k * p2_x;
 
             p1.Add_Force(p1_force);
             p2.Add_Force(p2_force);

@@ -41,7 +41,7 @@ namespace Facehead
             force += f;
         }
 
-        public Vector3 Update(float deltatime)
+        public Vector3 Update_Data(float deltatime)
         {
             if (isKinematic)
                 return position;
@@ -141,6 +141,57 @@ namespace Facehead
             r1.Add_Force(faero);
             r2.Add_Force(faero);
             r3.Add_Force(faero);
+        }
+    }
+    public class ClothSimulation
+    {
+        // fields
+        public List<Particle> particles;
+        public List<SpringDamper> springs;
+        public List<AeroTriangle> triangles;
+        public Vector3 gravity;
+
+        // methods
+        public ClothSimulation()
+        {
+            particles = new List<Particle>();
+            springs = new List<SpringDamper>();
+            triangles = new List<AeroTriangle>();
+            gravity = new Vector3(0, -9.81f, 0);
+        }
+
+        public ClothSimulation(List<Particle> p, List<SpringDamper> s, List<AeroTriangle> t, Vector3 g)
+        {
+            particles = p;
+            springs = s;
+            triangles = t;
+            gravity = g;
+        }
+
+        // Unity methods
+        public void Update_Data()
+        {
+            // calculate forces
+            foreach (Particle p in particles)
+            {
+                p.Add_Force(gravity);
+            }
+
+            foreach (SpringDamper s in springs)
+            {
+                s.Calculate_Force();
+            }
+
+            foreach (AeroTriangle t in triangles)
+            {
+                t.Calculate_Force();
+            }
+
+            // Euler integration of movement
+            foreach (Particle p in particles)
+            {
+                p.Update_Data(Time.deltaTime);
+            }
         }
     }
 }

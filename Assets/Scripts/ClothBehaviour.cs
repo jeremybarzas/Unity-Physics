@@ -5,35 +5,28 @@ using UnityEngine;
 namespace Facehead
 {
     public class ClothBehaviour : MonoBehaviour
-    {  
+    {
         // fields
+        public ClothSimulation cloth;
         public List<ParticleBehaviour> particles;
-        public List<SpringDamper> springs;
-        public List<AeroTriangle> triangles;
-        public Vector3 gravity = new Vector3(0, -9.81f, 0);
-
-        // methods        
 
         // Unity methods
-        void Update()
+        private void Awake()
         {
-            // calculate forces
-            foreach (ParticleBehaviour p in particles)
-            {
-                p.Particle.Add_Force(gravity);
-            }
+            cloth = new ClothSimulation();
+            particles = new List<ParticleBehaviour>();
+        }
 
-            foreach (SpringDamper s in springs)
-            {
-                s.Calculate_Force();
-            }
+        private void Update()
+        {
+            Update_Cloth_Object();
+        }
 
-            foreach (AeroTriangle t in triangles)
-            {
-                t.Calculate_Force();
-            }
+        // methods
+        private void Update_Cloth_Object()
+        {
+            cloth.Update_Data();
 
-            // Euler integration of movement
             foreach (ParticleBehaviour p in particles)
             {
                 p.Update_Particle();

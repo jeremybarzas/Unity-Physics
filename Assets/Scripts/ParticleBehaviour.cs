@@ -22,13 +22,12 @@ namespace Facehead
             {
                 particle = value;
             }
-        }
-       
+        }       
 
         // methods
         void Update()
         {
-            transform.position = particle.Update(Time.deltaTime);
+            transform.position = particle.position;
         }
     }
 }

@@ -25,8 +25,9 @@ namespace Facehead
         }       
 
         // methods
-        void Update()
+        public void Update_Particle()
         {
+            particle.Update(Time.deltaTime);
             transform.position = particle.position;
         }
     }

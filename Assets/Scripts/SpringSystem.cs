@@ -13,8 +13,7 @@ namespace Facehead
         public Vector3 velocity;
         public Vector3 acceleration;
         public Vector3 force;
-
-        //public bool isKinematic;
+        public bool isKinematic;
 
         // methods
         public Particle()
@@ -24,15 +23,17 @@ namespace Facehead
             velocity = Vector3.zero;
             acceleration = Vector3.zero;
             force = Vector3.zero;
+            isKinematic = false;
         }
 
-        public Particle(float m, Vector3 p, Vector3 v)
+        public Particle(float m, Vector3 p, Vector3 v, bool k)
         {
             mass = m;
             position = p;
             velocity = v;
             acceleration = Vector3.zero;
             force = Vector3.zero;
+            isKinematic = k;
         }
 
         public void Add_Force(Vector3 f)
@@ -42,8 +43,8 @@ namespace Facehead
 
         public Vector3 Update(float deltatime)
         {
-            //if (isKinematic)
-                //return position;
+            if (isKinematic)
+                return position;
 
             acceleration = force / mass;
             velocity += acceleration * deltatime;
@@ -51,6 +52,11 @@ namespace Facehead
 
             force = Vector3.zero;
             return position;
+        }
+
+        public void Set_Kinematic(bool toggle)
+        {   
+            isKinematic = toggle;
         }
     }
 
@@ -63,16 +69,23 @@ namespace Facehead
 
         public float ks; // constant tightness
         public float kd; // damping coefficient
-        public float lo; // rest position displacment
-        
+        public float lo; // rest length displacment
+
         // methods
         public SpringDamper()
         {
-            var p1_start = new Vector3(-5, 0, 0);
-            var p2_start = new Vector3(5, 0, 0);
+            p1 = new Particle();
+            p2 = new Particle();
+            ks = 1;
+            kd = 1;
+        }
 
-            p1 = new Particle(1, p1_start * 2, Vector3.right);
-            p2 = new Particle(1, p2_start * 2, Vector3.left);           
+        public SpringDamper(Particle part1, Particle part2, float tightness, float dampingFactor)
+        {
+            p1 = part1;
+            p2 = part2;
+            ks = tightness;
+            kd = dampingFactor;
         }
 
         public void Calculate_Force()
@@ -94,11 +107,40 @@ namespace Facehead
             p1.Add_Force(f1);
             p2.Add_Force(f2);
         }
+    }
 
-        public void Update()
+    public class AeroTriangle
+    {
+        // fields
+        public Particle r1;
+        public Particle r2;
+        public Particle r3;
+        float density;
+        float drag;
+
+        // methods
+        public void Calculate_Force()
         {
-            p1.Update(Time.deltaTime);
-            p1.Update(Time.deltaTime);
+            var n = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position))
+                    / Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;
+           
+            var ao = 0.5f * Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).normalized;
+
+            var vsurface = (r1.velocity + r2.velocity + r3.velocity) / 3;
+
+            var v = vsurface * -density;
+
+            var a = ao * Vector3.Dot(v, n) / v.magnitude;
+
+            var an = Vector3.Cross(a,n).normalized;
+
+            var faero = -0.5f * density * (v.magnitude * v.magnitude) * drag * an;
+
+            faero /= 3;
+
+            r1.Add_Force(faero);
+            r2.Add_Force(faero);
+            r3.Add_Force(faero);
         }
     }
 }

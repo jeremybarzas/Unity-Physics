@@ -25,7 +25,7 @@ namespace Facehead
         }       
 
         // methods
-        public void Update_Particle()
+        public void LateUpdate()
         {
             transform.position = particle.position;
         }

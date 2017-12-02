@@ -219,7 +219,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8490b7a0ae5733f41941464a920f372f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particles: []
+  cloth:
+    particles: []
+    springs: []
+    triangles: []
+    gravity: {x: 0, y: -9.81, z: 0}
 --- !u!4 &1036243821
 Transform:
   m_ObjectHideFlags: 0

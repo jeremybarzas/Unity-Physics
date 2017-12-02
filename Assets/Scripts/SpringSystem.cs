@@ -38,6 +38,8 @@ namespace Facehead
 
         public void Add_Force(Vector3 f)
         {
+            if (isKinematic)
+                return;
             force += f;
         }
 
@@ -55,7 +57,7 @@ namespace Facehead
         }
 
         public void Set_Kinematic(bool toggle)
-        {   
+        {
             isKinematic = toggle;
         }
     }
@@ -64,12 +66,12 @@ namespace Facehead
     public class SpringDamper
     {
         // fields     
-        public Particle p1;        
+        public Particle p1;
         public Particle p2;
 
-        public float ks; // constant tightness
-        public float kd; // damping coefficient
-        public float lo; // rest length displacment
+        public float ks = 2; // constant tightness
+        public float kd = 2; // damping coefficient
+        public float lo = 2; // rest length displacment
 
         // methods
         public SpringDamper()
@@ -93,7 +95,7 @@ namespace Facehead
             // calculate unit length vector
             var e = p2.position - p1.position;
             var l = e.magnitude;
-            e = e.normalized / l;
+            e = e / l;
 
             // calculate 1D vectors
             var v1 = Vector3.Dot(e, p1.velocity);
@@ -107,42 +109,51 @@ namespace Facehead
             p1.Add_Force(f1);
             p2.Add_Force(f2);
         }
+
+        public void DrawLine()
+        {
+            Debug.DrawLine(p1.position, p2.position);
+        }
     }
 
+    [System.Serializable]
     public class AeroTriangle
     {
         // fields
         public Particle r1;
         public Particle r2;
         public Particle r3;
-        float density;
-        float drag;
+        public float density;
+        public float drag;
 
         // methods
         public void Calculate_Force()
         {
-            var n = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position))
-                    / Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;
-           
-            var ao = 0.5f * Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).normalized;
+            Vector3 n = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position));
 
-            var vsurface = (r1.velocity + r2.velocity + r3.velocity) / 3;
+            float nmag = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;
 
-            var v = vsurface * -density;
+            Vector3 n_normal = n / nmag;
 
-            var a = ao * Vector3.Dot(v, n) / v.magnitude;
+            float ao = 0.5f * Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;
 
-            var an = Vector3.Cross(a,n).normalized;
+            Vector3 vsurface = (r1.velocity + r2.velocity + r3.velocity) / 3.0f;
 
-            var faero = -0.5f * density * (v.magnitude * v.magnitude) * drag * an;
+            Vector3 v = vsurface * density;
 
-            faero /= 3;
+            float a = ao * Vector3.Dot(v, n_normal) / v.magnitude;
+
+            Vector3 faero = -0.5f * density * (v.magnitude * v.magnitude) * drag * a * n_normal;
+
+            faero = faero / 3.0f;
 
             r1.Add_Force(faero);
             r2.Add_Force(faero);
             r3.Add_Force(faero);
         }
     }
+
+    [System.Serializable]
     public class ClothSimulation
     {
         // fields
@@ -180,12 +191,13 @@ namespace Facehead
             foreach (SpringDamper s in springs)
             {
                 s.Calculate_Force();
+                s.DrawLine();
             }
 
-            foreach (AeroTriangle t in triangles)
-            {
-                t.Calculate_Force();
-            }
+            //foreach (AeroTriangle t in triangles)
+            //{
+            //    t.Calculate_Force();
+            //}
 
             // Euler integration of movement
             foreach (Particle p in particles)

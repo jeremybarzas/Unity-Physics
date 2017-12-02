@@ -19,12 +19,6 @@ namespace Facehead
 
         private void Update()
         {
-            Update_Cloth_Object();
-        }
-
-        // methods
-        private void Update_Cloth_Object()
-        {
             cloth.Update_Data();
 
             foreach (ParticleBehaviour p in particles)

@@ -26,14 +26,10 @@ namespace Facehead
             isKinematic = false;
         }
 
-        public Particle(float m, Vector3 p, Vector3 v, bool k)
+        public Particle(float m, Vector3 p) : base()
         {
             mass = m;
             position = p;
-            velocity = v;
-            acceleration = Vector3.zero;
-            force = Vector3.zero;
-            isKinematic = k;
         }
 
         public void Add_Force(Vector3 f)
@@ -69,9 +65,9 @@ namespace Facehead
         public Particle p1;
         public Particle p2;
 
-        public float ks = 2; // constant tightness
-        public float kd = 2; // damping coefficient
-        public float lo = 2; // rest length displacment
+        public float ks; // constant tightness
+        public float kd; // damping coefficient
+        public float lo; // rest length displacment
 
         // methods
         public SpringDamper()
@@ -80,6 +76,7 @@ namespace Facehead
             p2 = new Particle();
             ks = 1;
             kd = 1;
+            lo = 2;
         }
 
         public SpringDamper(Particle part1, Particle part2, float tightness, float dampingFactor)
@@ -154,7 +151,7 @@ namespace Facehead
     }
 
     [System.Serializable]
-    public class ClothSimulation
+    public class ClothSystem
     {
         // fields
         public List<Particle> particles;
@@ -163,7 +160,7 @@ namespace Facehead
         public Vector3 gravity;
 
         // methods
-        public ClothSimulation()
+        public ClothSystem()
         {
             particles = new List<Particle>();
             springs = new List<SpringDamper>();
@@ -171,7 +168,7 @@ namespace Facehead
             gravity = new Vector3(0, -9.81f, 0);
         }
 
-        public ClothSimulation(List<Particle> p, List<SpringDamper> s, List<AeroTriangle> t, Vector3 g)
+        public ClothSystem(List<Particle> p, List<SpringDamper> s, List<AeroTriangle> t, Vector3 g)
         {
             particles = p;
             springs = s;
@@ -179,7 +176,72 @@ namespace Facehead
             gravity = g;
         }
 
-        // Unity methods
+        public void Create_Cloth(int width, int length, float padding)
+        {
+            // create particles
+            int pCount = width * length;
+            while (particles.Count < pCount)
+            {
+                Vector3 pos = Vector3.zero;
+                Particle p = new Particle(1, pos);
+                p.Set_Kinematic(true);
+                particles.Add(p);
+            }
+
+            // set particle position
+            int vertIndex = 0;
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < length; j++)
+                {
+                    var pos = new Vector3(j, -i, 0);
+                    pos *= padding;
+                    particles[vertIndex].position = pos; ;
+                    vertIndex++;
+                }
+            }
+
+            // make 4 corners static
+            particles[0].Set_Kinematic(true);
+            particles[width].Set_Kinematic(true);
+            particles[length].Set_Kinematic(true);
+            particles[particles.Count - 1].Set_Kinematic(true);
+            int n = width;
+            int counter = 0;
+            for (int i = 0; i < particles.Count; i++)
+            {                
+                if (counter < n-1)
+                {
+                    var sd = new SpringDamper(particles[i], particles[i + 1], 5, 5);
+                    springs.Add(sd);
+                    counter++;
+                }
+                else
+                    counter = 0;
+
+
+            }
+
+            //// vertical
+            //for (int i = 0, j = 0; j < length - 1;)
+            //{
+            //    if (i == length - 1)
+            //    {
+            //        j += length;
+            //        SpringDamper sd = new SpringDamper(particles[j], particles[j + 1], 5, 5);
+            //        springs.Add(sd);
+            //        j++;
+            //        i = 0;
+            //    }
+            //    else
+            //    {
+            //        SpringDamper sd = new SpringDamper(particles[i], particles[i + 1], 5, 5);
+            //        springs.Add(sd);
+            //        i++;
+            //    }
+            //}
+        }
+
         public void Update_Data()
         {
             // calculate forces

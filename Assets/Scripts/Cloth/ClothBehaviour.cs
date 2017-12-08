@@ -10,21 +10,22 @@ namespace Facehead
         public int width = 4;
         public int length = 4;
         public float padding = 10;
+        public float tightness = 1;
+        public float dampingFactor = 1;
+
         public ClothSystem cloth;
-        public float ks, kd;
 
         // Unity methods
         private void Awake()
         {
-            cloth = new ClothSystem();
-            cloth.Create_Cloth(width, length, padding);
+            cloth = new ClothSystem(width, length, padding, tightness, dampingFactor);            
         }
 
         private void Start()
-        {
+        {            
             int counter = 0;
             foreach (Particle p in cloth.particles)
-            {
+            {                
                 var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 go.name = string.Format("Particle::{0}", counter);
                 var pb = go.AddComponent<ParticleBehaviour>();

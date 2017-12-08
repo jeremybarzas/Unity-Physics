@@ -76,7 +76,7 @@ namespace Facehead
             p2 = new Particle();
             ks = 1;
             kd = 1;
-            lo = 2;
+            lo = 1;
         }
 
         public SpringDamper(Particle part1, Particle part2, float tightness, float dampingFactor)
@@ -85,6 +85,7 @@ namespace Facehead
             p2 = part2;
             ks = tightness;
             kd = dampingFactor;
+            lo = Vector3.Distance(p1.position, p2.position);
         }
 
         public void Calculate_Force()
@@ -156,37 +157,27 @@ namespace Facehead
         // fields
         public List<Particle> particles;
         public List<SpringDamper> springs;
+        public List<SpringDamper> bendingSprings;
         public List<AeroTriangle> triangles;
         public Vector3 gravity;
 
         // methods
-        public ClothSystem()
+        public ClothSystem(int width, int length, float padding, float t, float d)
         {
             particles = new List<Particle>();
             springs = new List<SpringDamper>();
+            bendingSprings = new List<SpringDamper>();
             triangles = new List<AeroTriangle>();
             gravity = new Vector3(0, -9.81f, 0);
-        }
 
-        public ClothSystem(List<Particle> p, List<SpringDamper> s, List<AeroTriangle> t, Vector3 g)
-        {
-            particles = p;
-            springs = s;
-            triangles = t;
-            gravity = g;
-        }
-
-        public void Create_Cloth(int width, int length, float padding)
-        {
-            // create particles
-            int pCount = width * length;
-            while (particles.Count < pCount)
-            {
-                Vector3 pos = Vector3.zero;
-                Particle p = new Particle(1, pos);
-                p.Set_Kinematic(true);
-                particles.Add(p);
-            }
+            ////create particles
+            ////int pCount = width * length;
+            ////while (particles.Count < pCount)
+            ////{
+            ////    Vector3 pos = Vector3.zero;
+            ////    Particle p = new Particle(1, pos);
+            ////    particles.Add(p);
+            ////}
 
             // set particle position
             int vertIndex = 0;
@@ -196,52 +187,133 @@ namespace Facehead
                 {
                     var pos = new Vector3(j, -i, 0);
                     pos *= padding;
-                    particles[vertIndex].position = pos; ;
+                    Particle p = new Particle(1, pos);
+                    particles.Add(p);                    
                     vertIndex++;
                 }
             }
-
-            // make 4 corners static
+            
+            // pin 4 corners in place
+            // top right
             particles[0].Set_Kinematic(true);
-            particles[width].Set_Kinematic(true);
-            particles[length].Set_Kinematic(true);
-            particles[particles.Count - 1].Set_Kinematic(true);
-            int n = width;
-            int counter = 0;
-            for (int i = 0; i < particles.Count; i++)
-            {                
-                if (counter < n-1)
+            // top left
+            particles[width - 1].Set_Kinematic(true);
+            // bottom left
+            //particles[(width * length) - width].Set_Kinematic(true);
+            // bottom right
+            //particles[particles.Count - 1].Set_Kinematic(true);
+
+            // make spring dampers
+            for (int i = 0; i < particles.Count; ++i)
+            {
+                if (i % (width) != width - 1)
                 {
-                    var sd = new SpringDamper(particles[i], particles[i + 1], 5, 5);
-                    springs.Add(sd);
-                    counter++;
+                    SpringDamper sdRight = new SpringDamper(particles[i], particles[i + 1], t, d);
+                    springs.Add(sdRight);
                 }
-                else
-                    counter = 0;
-
-
+                if (i < (particles.Count - length))
+                {
+                    SpringDamper sdDown = new SpringDamper(particles[i], particles[i + length], t, d);
+                    springs.Add(sdDown);
+                }
             }
 
-            //// vertical
-            //for (int i = 0, j = 0; j < length - 1;)
+            // make bending springs
+            //int count = (width * length);
+            //int index = 0;
+            //int control = 0;
+            //while (true)
             //{
-            //    if (i == length - 1)
+            //    if (control != width / 2)
             //    {
-            //        j += length;
-            //        SpringDamper sd = new SpringDamper(particles[j], particles[j + 1], 5, 5);
-            //        springs.Add(sd);
-            //        j++;
-            //        i = 0;
-            //    }
-            //    else
-            //    {
-            //        SpringDamper sd = new SpringDamper(particles[i], particles[i + 1], 5, 5);
-            //        springs.Add(sd);
-            //        i++;
-            //    }
-            //}
-        }
+            //        // horizontal
+            //        SpringDamper hBend = new SpringDamper(particles[index], particles[index + 2], t, d);
+            //        hBend.lo = hBend.lo / 4;
+            //        bendingSprings.Add(hBend);
 
+            //        // vertical
+            //        SpringDamper vBend = new SpringDamper(particles[index], particles[index + width * 2], t, d);
+            //        vBend.lo = vBend.lo / 4;
+            //        bendingSprings.Add(vBend);
+
+            //        index++;
+            //        control++;
+            //    }
+            //    if (control == width / 2)
+            //    {
+            //        index += width / 2;
+            //        control = 0;
+            //    }
+            //    if (index >= count)
+            //    {
+            //        break;
+            //    }
+                
+            //    Debug.Log("index: " + index);
+            //    Debug.Log("control: " + control);
+            //    Debug.Log("count: " + bendingSprings.Count);
+            //}
+
+            for (int i = 0, h = 0, v = 0, c = 0; c < particles.Count; i++)
+            {
+                if (!(i >= (width * h) / 2))
+                {
+                    h = 0;
+                    i += width;
+                }
+                if (h < width / 2)
+                {
+                    if (i % (width) != width - 2)
+                    {
+                        SpringDamper sdRight = new SpringDamper(particles[i], particles[i + 2], t, d);
+                        bendingSprings.Add(sdRight);
+                        h++;
+                        c++;
+                    }
+                }
+
+                if (!(i >= (length * v) / 2))
+                {
+                    v = 0;
+                    i += length;
+                }
+                if (v < length / 2)
+                {
+                    if (i < (particles.Count - (length * 2)))
+                    {
+                        SpringDamper sdDown = new SpringDamper(particles[i], particles[i + length * 2], t, d);
+                        bendingSprings.Add(sdDown);
+                        v++;
+                        c++;
+                    }
+                }
+
+                //if (i % (width) != width - 2)
+                //{
+                //    SpringDamper sdRight = new SpringDamper(particles[i], particles[i + 2], t, d);
+                //    bendingSprings.Add(sdRight);
+                //    h++;
+                //}
+                //if (i < (particles.Count - (length * 2)))
+                //{
+                //    SpringDamper sdDown = new SpringDamper(particles[i], particles[i + length * 2], t, d);
+                //    bendingSprings.Add(sdDown);
+                //    v++;
+                //}
+                Debug.Log(i);
+            }
+
+            foreach (SpringDamper s in bendingSprings)
+            {
+                var currIndex = bendingSprings.IndexOf(s).ToString();
+                var p1 = particles.IndexOf(s.p1).ToString();
+                var p2 = particles.IndexOf(s.p2).ToString();
+                string bend = "bspring " + currIndex + ": p1 = " + p1 + ",  p2 = " + p2 + "\n";
+                Debug.Log(bend);
+            }
+            
+        }        
+        
         public void Update_Data()
         {
             // calculate forces

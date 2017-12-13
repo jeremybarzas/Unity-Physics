@@ -220,11 +220,11 @@ namespace Facehead
             {
                 if (i % (width) != width - 1)
                 {
-                    // top left, top right, bot right
+                    // t left, t right, b right
                     AeroTriangle tri = new AeroTriangle(particles[i], particles[i + 1], particles[i + (width + 1)], 1, 1);
                     triangles.Add(tri);
 
-                    // top left, bot left, bot right
+                    // t left, b left, b right
                     tri = new AeroTriangle(particles[i], particles[i + width], particles[i + (width + 1)], 1, 1);
                     triangles.Add(tri);
                 }
@@ -258,10 +258,21 @@ namespace Facehead
             //particles[particles.Count - 1].Set_Kinematic(true);
 
             // pin top row in place
-            //particles[0].Set_Kinematic(true);
-            //particles[1].Set_Kinematic(true);
-            //particles[2].Set_Kinematic(true);
-            //particles[3].Set_Kinematic(true);
+            particles[0].Set_Kinematic(true);
+            particles[1].Set_Kinematic(true);
+            particles[2].Set_Kinematic(true);
+            particles[3].Set_Kinematic(true);
+
+            // print triangles debug info
+            foreach (AeroTriangle tri in triangles)
+            {
+                var currIndex = triangles.IndexOf(tri).ToString();
+                var p1 = particles.IndexOf(tri.r1).ToString();
+                var p2 = particles.IndexOf(tri.r2).ToString();
+                var p3 = particles.IndexOf(tri.r3).ToString();
+                string triangle = "triangle " + currIndex + ": p1 = " + p1 + ",  p2 = " + p2 + ",  p3 = " + p3 + "\n";
+                Debug.Log(triangle);
+            }
         }
         
         public void Update_Data()
@@ -278,10 +289,10 @@ namespace Facehead
                 s.DrawLine();
             }
 
-            foreach (AeroTriangle t in triangles)
-            {
-                t.Calculate_Force();
-            }
+            //foreach (AeroTriangle t in triangles)
+            //{
+            //    t.Calculate_Force();
+            //}
 
             // Euler integration of movement
             foreach (Particle p in particles)

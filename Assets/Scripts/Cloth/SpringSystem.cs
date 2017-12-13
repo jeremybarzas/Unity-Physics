@@ -183,22 +183,6 @@ namespace Facehead
                     vertIndex++;
                 }
             }
-            
-            // pin 4 corners in place
-            //// top right
-            //particles[0].Set_Kinematic(true);
-            //// top left
-            //particles[width - 1].Set_Kinematic(true);
-            //// bottom left
-            //particles[(width * length) - width].Set_Kinematic(true);
-            //// bottom right
-            //particles[particles.Count - 1].Set_Kinematic(true);
-
-            // pin top row in place
-            particles[0].Set_Kinematic(true);
-            particles[1].Set_Kinematic(true);
-            particles[2].Set_Kinematic(true);
-            particles[3].Set_Kinematic(true);
 
             // make spring dampers
             for (int i = 0; i < particles.Count; ++i)
@@ -229,6 +213,24 @@ namespace Facehead
                     bendingSprings.Add(sdDown);
                 }
             }
+
+            /* ============ TESTING AND DEBUG CODE ============ */
+
+            // pin 4 corners in place
+            //// top right
+            //particles[0].Set_Kinematic(true);
+            //// top left
+            //particles[width - 1].Set_Kinematic(true);
+            //// bottom left
+            //particles[(width * length) - width].Set_Kinematic(true);
+            //// bottom right
+            //particles[particles.Count - 1].Set_Kinematic(true);
+
+            // pin top row in place
+            particles[0].Set_Kinematic(true);
+            particles[1].Set_Kinematic(true);
+            particles[2].Set_Kinematic(true);
+            particles[3].Set_Kinematic(true);
 
             // print bending spring debug info
             foreach (SpringDamper s in bendingSprings)

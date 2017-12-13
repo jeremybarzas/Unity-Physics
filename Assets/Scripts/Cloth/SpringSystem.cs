@@ -125,6 +125,15 @@ namespace Facehead
         public float drag;
 
         // methods
+        public AeroTriangle(Particle p1, Particle p2, Particle p3, float _density, float _drag)
+        {
+            r1 = p1;
+            r2 = p2;
+            r3 = p3;
+            density = _density;
+            drag = _drag;
+        }
+
         public void Calculate_Force()
         {
             Vector3 n = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position));
@@ -184,7 +193,7 @@ namespace Facehead
                 }
             }
 
-            // make spring dampers
+            // make spring dampers horizontal and vertical
             for (int i = 0; i < particles.Count; ++i)
             {
                 if (i % (width) != width - 1)
@@ -196,6 +205,28 @@ namespace Facehead
                 {
                     SpringDamper sdDown = new SpringDamper(particles[i], particles[i + length], t, d);
                     springs.Add(sdDown);
+                }
+            }
+
+            // make spring dampers diagonal
+            for (int i = 0; i < ((width * length) - width) - 1; i++)
+            {
+                SpringDamper diag = new SpringDamper(particles[i], particles[i + (width - 1)], t, d);
+                springs.Add(diag);
+            }
+
+            // make triangles
+            for (int i = 0; i < ((width * length) - width) - 1; i++)
+            {
+                if (i % (width) != width - 1)
+                {
+                    // top left, top right, bot right
+                    AeroTriangle tri = new AeroTriangle(particles[i], particles[i + 1], particles[i + (width + 1)], 1, 1);
+                    triangles.Add(tri);
+
+                    // top left, bot left, bot right
+                    tri = new AeroTriangle(particles[i], particles[i + width], particles[i + (width + 1)], 1, 1);
+                    triangles.Add(tri);
                 }
             }
 
@@ -227,20 +258,10 @@ namespace Facehead
             //particles[particles.Count - 1].Set_Kinematic(true);
 
             // pin top row in place
-            particles[0].Set_Kinematic(true);
-            particles[1].Set_Kinematic(true);
-            particles[2].Set_Kinematic(true);
-            particles[3].Set_Kinematic(true);
-
-            // print bending spring debug info
-            foreach (SpringDamper s in bendingSprings)
-            {
-                var currIndex = bendingSprings.IndexOf(s).ToString();
-                var p1 = particles.IndexOf(s.p1).ToString();
-                var p2 = particles.IndexOf(s.p2).ToString();
-                string bend = "bspring " + currIndex + ": p1 = " + p1 + ",  p2 = " + p2 + "\n";
-                Debug.Log(bend);
-            }
+            //particles[0].Set_Kinematic(true);
+            //particles[1].Set_Kinematic(true);
+            //particles[2].Set_Kinematic(true);
+            //particles[3].Set_Kinematic(true);
         }
         
         public void Update_Data()
@@ -257,10 +278,10 @@ namespace Facehead
                 s.DrawLine();
             }
 
-            //foreach (AeroTriangle t in triangles)
-            //{
-            //    t.Calculate_Force();
-            //}
+            foreach (AeroTriangle t in triangles)
+            {
+                t.Calculate_Force();
+            }
 
             // Euler integration of movement
             foreach (Particle p in particles)

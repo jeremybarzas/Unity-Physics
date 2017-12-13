@@ -170,16 +170,7 @@ namespace Facehead
             triangles = new List<AeroTriangle>();
             gravity = new Vector3(0, -9.81f, 0);
 
-            ////create particles
-            ////int pCount = width * length;
-            ////while (particles.Count < pCount)
-            ////{
-            ////    Vector3 pos = Vector3.zero;
-            ////    Particle p = new Particle(1, pos);
-            ////    particles.Add(p);
-            ////}
-
-            // set particle position
+            // create particles with position
             int vertIndex = 0;
             for (int i = 0; i < width; i++)
             {
@@ -203,7 +194,7 @@ namespace Facehead
             //// bottom right
             //particles[particles.Count - 1].Set_Kinematic(true);
 
-            // pin top roaw in place
+            // pin top row in place
             particles[0].Set_Kinematic(true);
             particles[1].Set_Kinematic(true);
             particles[2].Set_Kinematic(true);
@@ -247,8 +238,8 @@ namespace Facehead
                 var p2 = particles.IndexOf(s.p2).ToString();
                 string bend = "bspring " + currIndex + ": p1 = " + p1 + ",  p2 = " + p2 + "\n";
                 Debug.Log(bend);
-            }            
-        }        
+            }
+        }
         
         public void Update_Data()
         {

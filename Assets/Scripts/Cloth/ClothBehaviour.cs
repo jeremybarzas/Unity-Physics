@@ -7,8 +7,8 @@ namespace Facehead
     public class ClothBehaviour : MonoBehaviour
     {
         // fields
-        public int width = 4;
-        public int length = 4;
+        public int width = 10;
+        public int length = 10;
         public float padding = 10;
         public float tightness = 1;
         public float dampingFactor = 1;
@@ -34,7 +34,7 @@ namespace Facehead
             }
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             cloth.Update_Data();
         }        

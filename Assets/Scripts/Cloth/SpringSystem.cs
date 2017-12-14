@@ -16,20 +16,14 @@ namespace Facehead
         public bool isKinematic;
 
         // methods
-        public Particle()
-        {
-            mass = 1;
-            position = Vector3.zero;
-            velocity = Vector3.zero;
-            acceleration = Vector3.zero;
-            force = Vector3.zero;
-            isKinematic = false;
-        }
-
-        public Particle(float m, Vector3 p) : base()
+        public Particle(float m, Vector3 p)
         {
             mass = m;
             position = p;
+            velocity = new Vector3(0, 0, 1);
+            acceleration = Vector3.zero;
+            force = Vector3.zero;
+            isKinematic = false;
         }
 
         public void Add_Force(Vector3 f)
@@ -70,15 +64,6 @@ namespace Facehead
         public float lo; // rest length displacment
 
         // methods
-        public SpringDamper()
-        {
-            p1 = new Particle();
-            p2 = new Particle();
-            ks = 1;
-            kd = 1;
-            lo = 1;
-        }
-
         public SpringDamper(Particle part1, Particle part2, float tightness, float dampingFactor)
         {
             p1 = part1;
@@ -121,42 +106,40 @@ namespace Facehead
         public Particle r1;
         public Particle r2;
         public Particle r3;
-        public float density;
-        public float drag;
+        public float density = 1;
+        public float drag = 1;
 
         // methods
-        public AeroTriangle(Particle p1, Particle p2, Particle p3, float _density, float _drag)
+        public AeroTriangle(Particle p1, Particle p2, Particle p3)
         {
             r1 = p1;
             r2 = p2;
             r3 = p3;
-            density = _density;
-            drag = _drag;
         }
 
         public void Calculate_Force()
         {
-            Vector3 n = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position));
+            Vector3 n = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position));            
 
-            float nmag = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;
+            float nmag = Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;            
 
-            Vector3 n_normal = n / nmag;
+            Vector3 n_normal = n / nmag;            
 
-            float ao = 0.5f * Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;
+            float ao = 0.5f * Vector3.Cross((r2.position - r1.position), (r3.position - r1.position)).magnitude;            
 
             Vector3 vsurface = (r1.velocity + r2.velocity + r3.velocity) / 3.0f;
 
             Vector3 v = vsurface * density;
 
-            float a = ao * Vector3.Dot(v, n_normal) / v.magnitude;
+            float a = ao * Vector3.Dot(v, n_normal) / v.magnitude;            
 
-            Vector3 faero = -0.5f * density * (v.magnitude * v.magnitude) * drag * a * n_normal;
+            Vector3 faero = -0.5f * density * (v.magnitude * v.magnitude) * drag * a * n_normal;            
 
-            faero = faero / 3.0f;
+            Vector3 aeroForce = faero / 3.0f;
 
-            r1.Add_Force(faero);
-            r2.Add_Force(faero);
-            r3.Add_Force(faero);
+            r1.Add_Force(aeroForce);
+            r2.Add_Force(aeroForce);
+            r3.Add_Force(aeroForce);
         }
     }
 
@@ -180,7 +163,6 @@ namespace Facehead
             gravity = new Vector3(0, -9.81f, 0);
 
             // create particles with position
-            int vertIndex = 0;
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < length; j++)
@@ -188,13 +170,12 @@ namespace Facehead
                     var pos = new Vector3(j, -i, 0);
                     pos *= padding;
                     Particle p = new Particle(1, pos);
-                    particles.Add(p);                    
-                    vertIndex++;
+                    particles.Add(p);
                 }
             }
 
             // make spring dampers horizontal and vertical
-            for (int i = 0; i < particles.Count; ++i)
+            for (int i = 0; i < (length * width); i++)
             {
                 if (i % (width) != width - 1)
                 {
@@ -209,10 +190,19 @@ namespace Facehead
             }
 
             // make spring dampers diagonal
-            for (int i = 0; i < ((width * length) - width) - 1; i++)
+            for (int i = 0; i <= ((width * length) - width) - 1; i++)
             {
-                SpringDamper diag = new SpringDamper(particles[i], particles[i + (width - 1)], t, d);
-                springs.Add(diag);
+                if (i % (width) != width - 1)
+                {
+                    SpringDamper diag = new SpringDamper(particles[i], particles[i + (width + 1)], t, d);
+                    springs.Add(diag);
+                }
+
+                if (i % (width) > 0)
+                {
+                    SpringDamper diag = new SpringDamper(particles[i], particles[i + (width - 1)], t, d);
+                    springs.Add(diag);
+                }
             }
 
             // make triangles
@@ -221,19 +211,19 @@ namespace Facehead
                 if (i % (width) != width - 1)
                 {
                     // t left, t right, b right
-                    AeroTriangle tri = new AeroTriangle(particles[i], particles[i + 1], particles[i + (width + 1)], 1, 1);
+                    AeroTriangle tri = new AeroTriangle(particles[i], particles[i + 1], particles[i + (width + 1)]);
                     triangles.Add(tri);
 
                     // t left, b left, b right
-                    tri = new AeroTriangle(particles[i], particles[i + width], particles[i + (width + 1)], 1, 1);
+                    tri = new AeroTriangle(particles[i], particles[i + width], particles[i + (width + 1)]);
                     triangles.Add(tri);
                 }
             }
 
             // make bending springs
-            for (int i = 0; i < particles.Count - 1; ++i)
+            for (int i = 0; i < (length * width) - 1; i++)
             {
-                if (i % (width) < width - ( width / 2))
+                if (i % (width) <= width - ( width / 2))
                 {
                     SpringDamper sdRight = new SpringDamper(particles[i], particles[i + 2], t, d);
                     bendingSprings.Add(sdRight);
@@ -245,25 +235,50 @@ namespace Facehead
                 }
             }
 
-            /* ============ TESTING AND DEBUG CODE ============ */
+            /* ============ TESTING ============ */
 
-            // pin 4 corners in place
-            //// top right
+            //// pin 4 corners in place
             //particles[0].Set_Kinematic(true);
-            //// top left
             //particles[width - 1].Set_Kinematic(true);
-            //// bottom left
             //particles[(width * length) - width].Set_Kinematic(true);
-            //// bottom right
-            //particles[particles.Count - 1].Set_Kinematic(true);
+            //particles[(width * length) - 1].Set_Kinematic(true);
 
             // pin top row in place
-            particles[0].Set_Kinematic(true);
-            particles[1].Set_Kinematic(true);
-            particles[2].Set_Kinematic(true);
-            particles[3].Set_Kinematic(true);
+            for (int i = 0; i < width; i++)
+            {
+                particles[i].Set_Kinematic(true);
+            }
 
-            // print triangles debug info
+            //particles[0].Set_Kinematic(true);            
+            //particles[width - 1].Set_Kinematic(true);
+
+            //// pin side left in place
+            //for (int i = 0; i < (width * length) - (width - 1);)
+            //{
+            //    particles[i].Set_Kinematic(true);
+            //    i += width;
+            //}
+
+            /* ============ DEBUG INFO ============ */
+
+            //foreach (SpringDamper s in springs)
+            //{
+            //    var currIndex = springs.IndexOf(s).ToString();
+            //    var p1 = particles.IndexOf(s.p1).ToString();
+            //    var p2 = particles.IndexOf(s.p2).ToString();
+            //    string spring = "spring " + currIndex + ": p1 = " + p1 + ",  p2 = " + p2 + "\n";
+            //    Debug.Log(spring);
+            //}
+
+            //foreach (SpringDamper s in bendingSprings)
+            //{
+            //    string currIndex = bendingSprings.IndexOf(s).ToString();
+            //    var p1 = particles.IndexOf(s.p1).ToString();
+            //    var p2 = particles.IndexOf(s.p2).ToString();
+            //    string bspring = "bendingspring " + currIndex + ": p1 = " + p1 + ",  p2 = " + p2 + "\n";
+            //    Debug.Log(bspring);
+            //}
+
             foreach (AeroTriangle tri in triangles)
             {
                 var currIndex = triangles.IndexOf(tri).ToString();
@@ -274,7 +289,7 @@ namespace Facehead
                 Debug.Log(triangle);
             }
         }
-        
+
         public void Update_Data()
         {
             // calculate forces
@@ -289,15 +304,21 @@ namespace Facehead
                 s.DrawLine();
             }
 
-            //foreach (AeroTriangle t in triangles)
-            //{
-            //    t.Calculate_Force();
-            //}
+            foreach (SpringDamper bs in bendingSprings)
+            {
+                bs.Calculate_Force();
+                bs.DrawLine();
+            }
+
+            foreach (AeroTriangle t in triangles)
+            {
+                t.Calculate_Force();
+            }
 
             // Euler integration of movement
             foreach (Particle p in particles)
             {
-                p.Update_Data(Time.deltaTime);
+                p.Update_Data(Time.deltaTime);                
             }
         }
     }

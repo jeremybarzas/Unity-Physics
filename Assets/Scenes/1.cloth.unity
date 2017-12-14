@@ -186,7 +186,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 827232627}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 37.5, y: -37.5, z: -100}
+  m_LocalPosition: {x: 37.5, y: -37.5, z: -94.19}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1036243821}
@@ -219,11 +219,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8490b7a0ae5733f41941464a920f372f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 4
-  length: 4
+  width: 7
+  length: 7
   padding: 5
-  tightness: 10
-  dampingFactor: 5
+  tightness: 25
+  dampingFactor: 10
   cloth:
     particles: []
     springs: []

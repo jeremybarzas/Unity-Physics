@@ -20,7 +20,7 @@ namespace Facehead
         {
             mass = m;
             position = p;
-            velocity = new Vector3(0, 0, 1);
+            velocity = new Vector3(0, 0, -2f);
             acceleration = Vector3.zero;
             force = Vector3.zero;
             isKinematic = false;
@@ -110,11 +110,13 @@ namespace Facehead
         public float drag = 1;
 
         // methods
-        public AeroTriangle(Particle p1, Particle p2, Particle p3)
+        public AeroTriangle(Particle p1, Particle p2, Particle p3, float _density, float _drag)
         {
             r1 = p1;
             r2 = p2;
             r3 = p3;
+            density = _density;
+            drag = _drag;
         }
 
         public void Calculate_Force()
@@ -154,7 +156,7 @@ namespace Facehead
         public Vector3 gravity;
 
         // methods
-        public ClothSystem(int width, int length, float padding, float t, float d)
+        public ClothSystem(int width, int length, float padding, float t, float d, float adens, float adrag)
         {
             particles = new List<Particle>();
             springs = new List<SpringDamper>();
@@ -211,11 +213,11 @@ namespace Facehead
                 if (i % (width) != width - 1)
                 {
                     // t left, t right, b right
-                    AeroTriangle tri = new AeroTriangle(particles[i], particles[i + 1], particles[i + (width + 1)]);
+                    AeroTriangle tri = new AeroTriangle(particles[i], particles[i + 1], particles[i + (width + 1)], adens, adrag);
                     triangles.Add(tri);
 
                     // t left, b left, b right
-                    tri = new AeroTriangle(particles[i], particles[i + width], particles[i + (width + 1)]);
+                    tri = new AeroTriangle(particles[i], particles[i + width], particles[i + (width + 1)], adens, adrag);
                     triangles.Add(tri);
                 }
             }

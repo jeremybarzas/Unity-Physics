@@ -9,16 +9,18 @@ namespace Facehead
         // fields
         public int width = 10;
         public int length = 10;
-        public float padding = 10;
-        public float tightness = 1;
-        public float dampingFactor = 1;
+        public float padding = 5f;
+        public float tightness = 1f;
+        public float dampingFactor = 1f;
+        public float airDensity = 1f;
+        public float airDrag = 1f;
 
         public ClothSystem cloth;
 
         // Unity methods
         private void Awake()
         {
-            cloth = new ClothSystem(width, length, padding, tightness, dampingFactor);            
+            cloth = new ClothSystem(width, length, padding, tightness, dampingFactor, airDensity, airDrag);            
         }
 
         private void Start()

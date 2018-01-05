@@ -16,6 +16,9 @@ namespace Facehead
         // Unity methods
         private void Start()
         {
+            ClothBehaviour cloth = GetComponentInParent<ClothBehaviour>();
+            offsetVector = new Vector3((cloth.width * .25f) * cloth.width, -(cloth.length * .25f) * cloth.length, -offsetDistance);
+            transform.localPosition = offsetVector;
             camera = GetComponentInChildren<Camera>();
         }
 
